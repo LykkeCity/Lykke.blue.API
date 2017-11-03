@@ -56,7 +56,7 @@ namespace Lykke.Service.Api
                 var appSettings = Configuration.LoadSettings<AppSettings>();
                 Log = CreateLogWithSlack(services, appSettings);
 
-                builder.RegisterModule(new ServiceModule(appSettings.Nested(x => x.ApiService), Log));
+                builder.RegisterModule(new ServiceModule(appSettings.Nested(x => x.BlueApi), Log));
                 builder.Populate(services);
                 ApplicationContainer = builder.Build();
 
@@ -100,7 +100,7 @@ namespace Lykke.Service.Api
         {
             try
             {
-                // NOTE: Service not yet recieve and process requests here
+                // NOTE: Service not yet receive and process requests here
 
                 await ApplicationContainer.Resolve<IStartupManager>().StartAsync();
 
@@ -117,7 +117,7 @@ namespace Lykke.Service.Api
         {
             try
             {
-                // NOTE: Service still can recieve and process requests here, so take care about it if you add logic here.
+                // NOTE: Service still can receive and process requests here, so take care about it if you add logic here.
 
                 await ApplicationContainer.Resolve<IShutdownManager>().StopAsync();
             }
@@ -135,7 +135,7 @@ namespace Lykke.Service.Api
         {
             try
             {
-                // NOTE: Service can't recieve and process requests here, so you can destroy all resources
+                // NOTE: Service can't receive and process requests here, so you can destroy all resources
                 
                 if (Log != null)
                 {
@@ -169,10 +169,10 @@ namespace Lykke.Service.Api
                 QueueName = settings.CurrentValue.SlackNotifications.AzureQueue.QueueName
             }, aggregateLogger);
 
-            var dbLogConnectionStringManager = settings.Nested(x => x.ApiService.Db.LogsConnString);
+            var dbLogConnectionStringManager = settings.Nested(x => x.BlueApi.Db.LogsConnString);
             var dbLogConnectionString = dbLogConnectionStringManager.CurrentValue;
 
-            // Creating azure storage logger, which logs own messages to concole log
+            // Creating azure storage logger, which logs own messages to console log
             if (!string.IsNullOrEmpty(dbLogConnectionString) && !(dbLogConnectionString.StartsWith("${") && dbLogConnectionString.EndsWith("}")))
             {
                 var persistenceManager = new LykkeLogToAzureStoragePersistenceManager(

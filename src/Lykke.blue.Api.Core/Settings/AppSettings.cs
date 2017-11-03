@@ -5,7 +5,7 @@ namespace Lykke.Service.Api.Core.Settings
 {
     public class AppSettings
     {
-        public ApiSettings ApiService { get; set; }
+        public ApiSettings BlueApi { get; set; }
         public SlackNotificationsSettings SlackNotifications { get; set; }
     }
 }
