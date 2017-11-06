@@ -72,7 +72,7 @@ namespace Lykke.blue.Api.Modules
 
             builder.RegisterType<PledgesClient>()
                 .As<IPledgesClient>()
-                .WithParameter("serviceUrl", _settings.CurrentValue.Services.RegistrationServiceUrl)
+                .WithParameter("serviceUrl", _settings.CurrentValue.Services.PledgesServiceUrl)
                 .WithParameter("log", _log)
                 .SingleInstance();
         }
