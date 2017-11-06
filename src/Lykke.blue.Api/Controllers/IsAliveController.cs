@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Net;
-using Lykke.Service.Api.Core.Services;
+using Lykke.blue.Api.Core.Services;
 using Lykke.Service.Api.Models;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.SwaggerGen.Annotations;

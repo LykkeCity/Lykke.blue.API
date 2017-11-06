@@ -8,12 +8,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="blues\**" />
+    <EmbeddedResource Remove="blues\**" />
+    <None Remove="blues\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Lykke.Common" Version="3.0.0" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="Domain\" />
-    <Folder Include="blues\" />
   </ItemGroup>
 
 </Project>

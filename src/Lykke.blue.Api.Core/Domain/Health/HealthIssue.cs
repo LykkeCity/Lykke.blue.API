@@ -1,4 +1,4 @@
-﻿namespace Lykke.Service.Api.Core.Domain.Health
+﻿namespace Lykke.blue.Api.Core.Domain.Health
 {
     public class HealthIssue
     {

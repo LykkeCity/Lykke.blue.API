@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Common.Log;
-using Lykke.Service.Api.Core.Services;
+using Lykke.blue.Api.Core.Services;
 
 namespace Lykke.Service.Api.Services
 {

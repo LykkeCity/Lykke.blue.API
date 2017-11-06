@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace Lykke.Service.Api.Core.Services
+namespace Lykke.blue.Api.Core.Services
 {
     public interface IShutdownManager
     {
