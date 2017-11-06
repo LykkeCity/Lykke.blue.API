@@ -3,7 +3,7 @@ using System.IO;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
 
-namespace Lykke.Service.Api
+namespace Lykke.blue.Api
 {
     public class Program
     {

@@ -2,7 +2,7 @@
 using Common.Log;
 using Lykke.blue.Api.Core.Services;
 
-namespace Lykke.Service.Api.Services
+namespace Lykke.blue.Api.blues
 {
     // NOTE: Sometimes, shutdown process should be expressed explicitly. 
     // If this is your case, use this class to manage shutdown.

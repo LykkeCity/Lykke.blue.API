@@ -2,22 +2,27 @@
 using System.Threading.Tasks;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
+using AutoMapper;
 using AzureStorage.Tables;
 using Common.Log;
+using FluentValidation.AspNetCore;
 using Lykke.blue.Api.Core.Services;
 using Lykke.blue.Api.Core.Settings;
+using Lykke.blue.Api.Infrastructure;
+using Lykke.blue.Api.Infrastructure.Authentication;
+using Lykke.blue.Api.Modules;
 using Lykke.Common.ApiLibrary.Middleware;
 using Lykke.Common.ApiLibrary.Swagger;
 using Lykke.Logs;
-using Lykke.Service.Api.Modules;
 using Lykke.SettingsReader;
 using Lykke.SlackNotification.AzureQueue;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Lykke.Service.Api
+namespace Lykke.blue.Api
 {
     public class Startup
     {
@@ -28,6 +33,13 @@ namespace Lykke.Service.Api
 
         public Startup(IHostingEnvironment env)
         {
+            Mapper.Initialize(cfg =>
+            {
+                cfg.AddProfiles(typeof(AutoMapperProfile));
+            });
+
+            Mapper.AssertConfigurationIsValid();
+
             var builder = new ConfigurationBuilder()
                 .SetBasePath(env.ContentRootPath)
                 .AddEnvironmentVariables();
@@ -41,6 +53,7 @@ namespace Lykke.Service.Api
             try
             {
                 services.AddMvc()
+                    .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<Startup>())
                     .AddJsonOptions(options =>
                     {
                         options.SerializerSettings.ContractResolver =
@@ -49,8 +62,16 @@ namespace Lykke.Service.Api
 
                 services.AddSwaggerGen(options =>
                 {
-                    options.DefaultLykkeConfiguration("v1", "Api API");
+                    options.DefaultLykkeConfiguration("v1", "blue API");
+                    options.OperationFilter<ApiKeyHeaderOperationFilter>();
                 });
+
+                services.AddAuthentication(options =>
+                    {
+                        options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                        options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                    })
+                    .AddScheme<LykkeAuthOptions, LykkeAuthHandler>("Bearer", options => { });
 
                 var builder = new ContainerBuilder();
                 var appSettings = Configuration.LoadSettings<AppSettings>();
@@ -78,7 +99,7 @@ namespace Lykke.Service.Api
                     app.UseDeveloperExceptionPage();
                 }
 
-                app.UseLykkeMiddleware("Api", ex => new {Message = "Technical problem"});
+                app.UseLykkeMiddleware("blue Api", ex => new {Message = "Technical problem"});
 
                 app.UseMvc();
                 app.UseSwagger();

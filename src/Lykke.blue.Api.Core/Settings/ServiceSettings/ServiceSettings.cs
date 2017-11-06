@@ -3,5 +3,6 @@
     public class ServiceSettings
     {
         public string ClientAccountServiceUrl { get; set; }
+        public string RegistrationServiceUrl { get; set; }
     }
 }

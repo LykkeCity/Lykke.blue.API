@@ -1,6 +1,6 @@
 ﻿using Xunit;
 
-namespace Lykke.Service.Api.Tests
+namespace Lykke.blue.Api.Tests
 {
     public class UnitTest1
     {

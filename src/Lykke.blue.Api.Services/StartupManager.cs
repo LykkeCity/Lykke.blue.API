@@ -2,7 +2,7 @@
 using Common.Log;
 using Lykke.blue.Api.Core.Services;
 
-namespace Lykke.Service.Api.Services
+namespace Lykke.blue.Api.blues
 {
     // NOTE: Sometimes, startup process which is expressed explicitly is not just better, 
     // but the only way. If this is your case, use this class to manage startup.

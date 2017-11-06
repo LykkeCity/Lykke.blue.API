@@ -1,7 +1,7 @@
 ﻿using System;
 using Common.Log;
 
-namespace Lykke.Service.Api.Client
+namespace Lykke.blue.Api.Client
 {
     public class ApiClient : IApiClient, IDisposable
     {

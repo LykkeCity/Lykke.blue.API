@@ -2,7 +2,7 @@
 using Lykke.blue.Api.Core.Domain.Health;
 using Lykke.blue.Api.Core.Services;
 
-namespace Lykke.Service.Api.Services
+namespace Lykke.blue.Api.blues
 {
     // NOTE: See https://lykkex.atlassian.net/wiki/spaces/LKEWALLET/pages/35755585/Add+your+app+to+Monitoring
     public class HealthService : IHealthService

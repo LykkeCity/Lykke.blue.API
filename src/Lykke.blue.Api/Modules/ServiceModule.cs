@@ -1,13 +1,21 @@
-﻿using Autofac;
+﻿using System;
+using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using Common.Log;
+using Lykke.blue.Api.blues;
+using Lykke.blue.Api.Core.Identity;
 using Lykke.blue.Api.Core.Services;
 using Lykke.blue.Api.Core.Settings.ServiceSettings;
-using Lykke.Service.Api.Services;
+using Lykke.blue.Api.Credentials;
+using Lykke.blue.Api.Infrastructure;
+using Lykke.blue.Api.Services.Identity;
+using Lykke.Service.ClientAccount.Client;
+using Lykke.Service.ClientAccount.Client.AutorestClient;
+using Lykke.Service.Registration;
 using Lykke.SettingsReader;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Lykke.Service.Api.Modules
+namespace Lykke.blue.Api.Modules
 {
     public class ServiceModule : Module
     {
@@ -26,16 +34,39 @@ namespace Lykke.Service.Api.Modules
 
         protected override void Load(ContainerBuilder builder)
         {
-            // TODO: Do not register entire settings in container, pass necessary settings to services which requires them
-            // ex:
-            //  builder.RegisterType<QuotesPublisher>()
-            //      .As<IQuotesPublisher>()
-            //      .WithParameter(TypedParameter.From(_settings.CurrentValue.QuotesPublication))
+            RegisterLocalTypes(builder);
+            RegisterLocalServices(builder);
+            RegisterExternalServices(builder);
 
-            builder.RegisterInstance(_log)
-                .As<ILog>()
+            _services.AddSingleton<ClientAccountLogic>();
+
+            builder.RegisterType<RequestContext>().As<IRequestContext>().InstancePerLifetimeScope();
+            builder.RegisterType<LykkePrincipal>().As<ILykkePrincipal>().InstancePerLifetimeScope();
+
+            builder.Populate(_services);
+        }
+
+        private void RegisterExternalServices(ContainerBuilder builder)
+        {
+            builder.RegisterType<ClientAccountService>()
+                .As<IClientAccountService>()
+                .WithParameter("baseUri", new Uri(_settings.CurrentValue.Services.ClientAccountServiceUrl));
+
+            builder.RegisterType<ClientAccountClient>()
+                .As<IClientAccountClient>()
+                .WithParameter("serviceUrl", _settings.CurrentValue.Services.ClientAccountServiceUrl)
+                .WithParameter("log", _log)
                 .SingleInstance();
 
+            builder.RegisterType<LykkeRegistrationClient>()
+                .As<ILykkeRegistrationClient>()
+                .WithParameter("serviceUrl", _settings.CurrentValue.Services.RegistrationServiceUrl)
+                .WithParameter("log", _log)
+                .SingleInstance();
+        }
+
+        private static void RegisterLocalServices(ContainerBuilder builder)
+        {
             builder.RegisterType<HealthService>()
                 .As<IHealthService>()
                 .SingleInstance();
@@ -45,10 +76,12 @@ namespace Lykke.Service.Api.Modules
 
             builder.RegisterType<ShutdownManager>()
                 .As<IShutdownManager>();
+        }
 
-            // TODO: Add your dependencies here
-
-            builder.Populate(_services);
+        private void RegisterLocalTypes(ContainerBuilder builder)
+        {
+            builder.RegisterInstance(_log).As<ILog>().SingleInstance();
+            builder.RegisterInstance(_settings.CurrentValue).SingleInstance();
         }
     }
 }

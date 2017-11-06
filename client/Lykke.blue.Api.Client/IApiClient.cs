@@ -1,5 +1,5 @@
-
-namespace Lykke.Service.Api.Client
+﻿
+namespace Lykke.blue.Api.Client
 {
     public interface IApiClient
     {

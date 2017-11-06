@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Lykke.Service.Api.Models
+namespace Lykke.blue.Api.Models
 {
     public class IsAliveResponse
     {
