@@ -19,6 +19,7 @@ using Lykke.SlackNotification.AzureQueue;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http.Internal;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -94,10 +95,25 @@ namespace Lykke.blue.Api
         {
             try
             {
+                app.UseCors(builder =>
+                {
+                    builder.AllowAnyOrigin();
+                    builder.AllowAnyHeader();
+                    builder.AllowAnyMethod();
+                });
+                app.Use(next => context =>
+                {
+                    context.Request.EnableRewind();
+
+                    return next(context);
+                });
+
                 if (env.IsDevelopment())
                 {
                     app.UseDeveloperExceptionPage();
                 }
+
+                app.UseAuthentication();
 
                 app.UseLykkeMiddleware("blue Api", ex => new {Message = "Technical problem"});
 

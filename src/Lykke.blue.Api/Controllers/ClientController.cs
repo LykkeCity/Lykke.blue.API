@@ -14,8 +14,8 @@ using Swashbuckle.SwaggerGen.Annotations;
 
 namespace Lykke.blue.Api.Controllers
 {
-    //[LowerVersion(Devices = "IPhone,IPad", LowerVersion = 181)]
-    //[LowerVersion(Devices = "android", LowerVersion = 659)]
+    [LowerVersion(Devices = "IPhone,IPad", LowerVersion = 181)]
+    [LowerVersion(Devices = "android", LowerVersion = 659)]
     [Route("api/client")]
     public class ClientController : Controller
     {

@@ -11,7 +11,9 @@ using Lykke.blue.Api.Infrastructure;
 using Lykke.blue.Api.Services.Identity;
 using Lykke.Service.ClientAccount.Client;
 using Lykke.Service.ClientAccount.Client.AutorestClient;
+using Lykke.Service.Pledges.Client;
 using Lykke.Service.Registration;
+using Lykke.Service.Session;
 using Lykke.SettingsReader;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -60,6 +62,16 @@ namespace Lykke.blue.Api.Modules
 
             builder.RegisterType<LykkeRegistrationClient>()
                 .As<ILykkeRegistrationClient>()
+                .WithParameter("serviceUrl", _settings.CurrentValue.Services.RegistrationServiceUrl)
+                .WithParameter("log", _log)
+                .SingleInstance();
+
+            builder.RegisterType<ClientSessionsClient>()
+                .As<IClientSessionsClient>()
+                .WithParameter("serviceUrl", _settings.CurrentValue.Services.SessionServiceUrl);
+
+            builder.RegisterType<PledgesClient>()
+                .As<IPledgesClient>()
                 .WithParameter("serviceUrl", _settings.CurrentValue.Services.RegistrationServiceUrl)
                 .WithParameter("log", _log)
                 .SingleInstance();

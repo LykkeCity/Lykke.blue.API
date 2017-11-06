@@ -4,5 +4,6 @@
     {
         public string ClientAccountServiceUrl { get; set; }
         public string RegistrationServiceUrl { get; set; }
+        public string SessionServiceUrl { get; set; }
     }
 }
