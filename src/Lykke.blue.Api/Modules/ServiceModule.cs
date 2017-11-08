@@ -12,6 +12,7 @@ using Lykke.blue.Api.Services.Identity;
 using Lykke.Service.ClientAccount.Client;
 using Lykke.Service.ClientAccount.Client.AutorestClient;
 using Lykke.Service.Pledges.Client;
+using Lykke.Service.Pledges.Client.AutorestClient;
 using Lykke.Service.Registration;
 using Lykke.Service.Session;
 using Lykke.SettingsReader;
@@ -74,6 +75,11 @@ namespace Lykke.blue.Api.Modules
                 .As<IPledgesClient>()
                 .WithParameter("serviceUrl", _settings.CurrentValue.Services.PledgesServiceUrl)
                 .WithParameter("log", _log)
+                .SingleInstance();
+
+            builder.RegisterType<PledgesAPI>()
+                .As<IPledgesAPI>()
+                .WithParameter("baseUri", new Uri(_settings.CurrentValue.Services.PledgesServiceUrl))
                 .SingleInstance();
         }
 

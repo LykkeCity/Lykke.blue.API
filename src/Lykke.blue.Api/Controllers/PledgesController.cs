@@ -8,6 +8,7 @@ using ApiRequests = Lykke.blue.Api.Requests;
 using ApiResponses = Lykke.blue.Api.Responses;
 using ClientModel = Lykke.Service.Pledges.Client.AutorestClient.Models;
 using Lykke.Service.Pledges.Client;
+using Lykke.Service.Pledges.Client.AutorestClient;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.SwaggerGen.Annotations;
@@ -20,13 +21,18 @@ namespace Lykke.blue.Api.Controllers
     {
         private readonly IRequestContext _requestContext;
         private readonly IPledgesClient _pledgesClient;
+        private readonly IPledgesAPI _pledgesApi;
         private readonly ILog _log;
 
-        public PledgesController(ILog log, IPledgesClient pledgesClient, IRequestContext requestContext)
+        public PledgesController(ILog log, 
+            IPledgesClient pledgesClient, 
+            IRequestContext requestContext,
+            IPledgesAPI pledgesApi)
         {
             _log = log ?? throw new ArgumentException(nameof(log));
             _pledgesClient = pledgesClient ?? throw new ArgumentException(nameof(pledgesClient));
             _requestContext = requestContext ?? throw new ArgumentNullException(nameof(requestContext));
+            _pledgesApi = pledgesApi ?? throw new ArgumentNullException(nameof(pledgesApi));
         }
 
         /// <summary>
@@ -38,7 +44,7 @@ namespace Lykke.blue.Api.Controllers
         [SwaggerOperation("CreatePledge")]
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
-        [ProducesResponseType(typeof(ApiResponses.CreatePledgeResponse), (int)HttpStatusCode.Created)]
+        [ProducesResponseType(typeof(void), (int)HttpStatusCode.Created)]
         public async Task<IActionResult> Create([FromBody] ApiRequests.CreatePledgeRequest request)
         {
             if (request == null)
@@ -47,31 +53,52 @@ namespace Lykke.blue.Api.Controllers
             var clientRequest = Mapper.Map<ClientModel.CreatePledgeRequest>(request);
             clientRequest.ClientId = _requestContext.ClientId;
 
-            var pledge = await _pledgesClient.Create(clientRequest);
-            var response = Mapper.Map<ApiResponses.CreatePledgeResponse>(pledge);
+            var pledgeApiResponse = await _pledgesApi.CreatePledgeWithHttpMessagesAsync(clientRequest);
 
-            return Created(uri: $"api/pledges/{pledge.Id}", value: response);
+            if (pledgeApiResponse.Response.StatusCode == HttpStatusCode.BadRequest)
+            {
+                var message = await pledgeApiResponse.Response.Content.ReadAsStringAsync().ConfigureAwait(false);
+
+                return BadRequest(message);
+            }
+            else if (pledgeApiResponse.Response.StatusCode == HttpStatusCode.NotFound)
+            {
+                var message = await pledgeApiResponse.Response.Content.ReadAsStringAsync().ConfigureAwait(false);
+
+                return NotFound(message);
+            }
+
+            return Created(uri: $"api/pledges/{clientRequest.ClientId}", value: string.Empty);
         }
 
         /// <summary>
         /// Get pledge.
         /// </summary>
-        /// <param name="id">Id of the pledge we wanna find.</param>
+        /// <param name="clientId">Id of the pledge we wanna find.</param>
         /// <returns>Found pledge.</returns>
-        [HttpGet("{id}")]
+        [HttpGet]
         [SwaggerOperation("GetPledge")]
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
         [ProducesResponseType(typeof(ApiResponses.GetPledgeResponse), (int)HttpStatusCode.OK)]
-        public async Task<IActionResult> Get(string id)
+        public async Task<IActionResult> Get()
         {
-            if (String.IsNullOrEmpty(id))
-                return BadRequest();
+            var pledgeApiResponse = await _pledgesApi.GetPledgeWithHttpMessagesAsync(_requestContext.ClientId);
 
-            var pledge = await _pledgesClient.Get(id);
+            if (pledgeApiResponse.Response.StatusCode == HttpStatusCode.BadRequest)
+            {
+                var message = await pledgeApiResponse.Response.Content.ReadAsStringAsync().ConfigureAwait(false);
 
-            if (pledge == null)
-                return NotFound();
+                return BadRequest(message);
+            }
+            else if (pledgeApiResponse.Response.StatusCode == HttpStatusCode.NotFound)
+            {
+                var message = await pledgeApiResponse.Response.Content.ReadAsStringAsync().ConfigureAwait(false);
+
+                return NotFound(message);
+            }
+
+            var pledge = pledgeApiResponse.Body;
 
             var response = Mapper.Map<ApiResponses.GetPledgeResponse>(pledge);
 
@@ -88,7 +115,7 @@ namespace Lykke.blue.Api.Controllers
         [SwaggerOperation("UpdatePledge")]
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
-        [ProducesResponseType(typeof(ApiResponses.UpdatePledgeResponse), (int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.NoContent)]
         public async Task<IActionResult> Update([FromBody] ApiRequests.UpdatePledgeRequest request)
         {
             if (request == null)
@@ -97,45 +124,51 @@ namespace Lykke.blue.Api.Controllers
             var clientRequest = Mapper.Map<ClientModel.UpdatePledgeRequest>(request);
             clientRequest.ClientId = _requestContext.ClientId;
 
-            var pledge = await _pledgesClient.Update(clientRequest);
-            var response = Mapper.Map<ApiResponses.UpdatePledgeResponse>(pledge);
+            var pledgeApiResponse = await _pledgesApi.UpdatePledgeWithHttpMessagesAsync(clientRequest);
 
-            return Ok(response);
-        }
+            if (pledgeApiResponse.Response.StatusCode == HttpStatusCode.BadRequest)
+            {
+                var message = await pledgeApiResponse.Response.Content.ReadAsStringAsync().ConfigureAwait(false);
 
-        /// <summary>
-        /// Delete pledge.
-        /// </summary>
-        /// <param name="id">Id of the pledge we wanna delete.</param>
-        [HttpDelete("{id}")]
-        [SwaggerOperation("DeletePledge")]
-        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
-        [ProducesResponseType((int)HttpStatusCode.NotFound)]
-        [ProducesResponseType(typeof(void), (int)HttpStatusCode.NoContent)]
-        public async Task<IActionResult> Delete(string id)
-        {
-            if (String.IsNullOrEmpty(id))
-                return BadRequest();
+                return BadRequest(message);
+            }
+            else if (pledgeApiResponse.Response.StatusCode == HttpStatusCode.NotFound)
+            {
+                var message = await pledgeApiResponse.Response.Content.ReadAsStringAsync().ConfigureAwait(false);
 
-            await _pledgesClient.Delete(id);
+                return NotFound(message);
+            }
 
             return NoContent();
         }
 
         /// <summary>
-        /// Get client pledge. 
+        /// Delete pledge.
         /// </summary>
-        [HttpGet]
-        [SwaggerOperation("GetPledge")]
+        /// <param name="clientId">Id of the pledge we wanna delete.</param>
+        [HttpDelete]
+        [SwaggerOperation("DeletePledge")]
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
-        [ProducesResponseType(typeof(ApiResponses.GetPledgeResponse), (int)HttpStatusCode.OK)]
-        public async Task<IActionResult> GetPledge()
+        [ProducesResponseType(typeof(void), (int)HttpStatusCode.NoContent)]
+        public async Task<IActionResult> Delete()
         {
-            var pledges = await _pledgesClient.GetPledgeByClientId(_requestContext.ClientId);
-            var response = Mapper.Map<ApiResponses.GetPledgeResponse>(pledges);
+            var pledgeApiResponse = await _pledgesApi.DeletePledgeWithHttpMessagesAsync(_requestContext.ClientId);
 
-            return Ok(response);
+            if (pledgeApiResponse.Response.StatusCode == HttpStatusCode.BadRequest)
+            {
+                var message = await pledgeApiResponse.Response.Content.ReadAsStringAsync().ConfigureAwait(false);
+
+                return BadRequest(message);
+            }
+            else if (pledgeApiResponse.Response.StatusCode == HttpStatusCode.NotFound)
+            {
+                var message = await pledgeApiResponse.Response.Content.ReadAsStringAsync().ConfigureAwait(false);
+
+                return NotFound(message);
+            }
+
+            return NoContent();
         }
     }
 }
