@@ -11,7 +11,9 @@ using Lykke.Service.Pledges.Client;
 using Lykke.Service.Pledges.Client.AutorestClient;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Rest;
 using Swashbuckle.SwaggerGen.Annotations;
+using Lykke.blue.Api.Infrastructure.Extensions;
 
 namespace Lykke.blue.Api.Controllers
 {
@@ -55,18 +57,10 @@ namespace Lykke.blue.Api.Controllers
 
             var pledgeApiResponse = await _pledgesApi.CreatePledgeWithHttpMessagesAsync(clientRequest);
 
-            if (pledgeApiResponse.Response.StatusCode == HttpStatusCode.BadRequest)
-            {
-                var message = await pledgeApiResponse.Response.Content.ReadAsStringAsync().ConfigureAwait(false);
+            var badResponse = await pledgeApiResponse.CheckClientResponseForErrors();
 
-                return BadRequest(message);
-            }
-            else if (pledgeApiResponse.Response.StatusCode == HttpStatusCode.NotFound)
-            {
-                var message = await pledgeApiResponse.Response.Content.ReadAsStringAsync().ConfigureAwait(false);
-
-                return NotFound(message);
-            }
+            if (badResponse != null)
+                return badResponse;
 
             return Created(uri: $"api/pledges/{clientRequest.ClientId}", value: string.Empty);
         }
@@ -85,18 +79,10 @@ namespace Lykke.blue.Api.Controllers
         {
             var pledgeApiResponse = await _pledgesApi.GetPledgeWithHttpMessagesAsync(_requestContext.ClientId);
 
-            if (pledgeApiResponse.Response.StatusCode == HttpStatusCode.BadRequest)
-            {
-                var message = await pledgeApiResponse.Response.Content.ReadAsStringAsync().ConfigureAwait(false);
+            var badResponse = await pledgeApiResponse.CheckClientResponseForErrors();
 
-                return BadRequest(message);
-            }
-            else if (pledgeApiResponse.Response.StatusCode == HttpStatusCode.NotFound)
-            {
-                var message = await pledgeApiResponse.Response.Content.ReadAsStringAsync().ConfigureAwait(false);
-
-                return NotFound(message);
-            }
+            if (badResponse != null)
+                return badResponse;
 
             var pledge = pledgeApiResponse.Body;
 
@@ -126,18 +112,10 @@ namespace Lykke.blue.Api.Controllers
 
             var pledgeApiResponse = await _pledgesApi.UpdatePledgeWithHttpMessagesAsync(clientRequest);
 
-            if (pledgeApiResponse.Response.StatusCode == HttpStatusCode.BadRequest)
-            {
-                var message = await pledgeApiResponse.Response.Content.ReadAsStringAsync().ConfigureAwait(false);
+            var badResponse = await pledgeApiResponse.CheckClientResponseForErrors();
 
-                return BadRequest(message);
-            }
-            else if (pledgeApiResponse.Response.StatusCode == HttpStatusCode.NotFound)
-            {
-                var message = await pledgeApiResponse.Response.Content.ReadAsStringAsync().ConfigureAwait(false);
-
-                return NotFound(message);
-            }
+            if (badResponse != null)
+                return badResponse;
 
             return NoContent();
         }
@@ -155,18 +133,10 @@ namespace Lykke.blue.Api.Controllers
         {
             var pledgeApiResponse = await _pledgesApi.DeletePledgeWithHttpMessagesAsync(_requestContext.ClientId);
 
-            if (pledgeApiResponse.Response.StatusCode == HttpStatusCode.BadRequest)
-            {
-                var message = await pledgeApiResponse.Response.Content.ReadAsStringAsync().ConfigureAwait(false);
+            var badResponse = await pledgeApiResponse.CheckClientResponseForErrors();
 
-                return BadRequest(message);
-            }
-            else if (pledgeApiResponse.Response.StatusCode == HttpStatusCode.NotFound)
-            {
-                var message = await pledgeApiResponse.Response.Content.ReadAsStringAsync().ConfigureAwait(false);
-
-                return NotFound(message);
-            }
+            if (badResponse != null)
+                return badResponse;
 
             return NoContent();
         }

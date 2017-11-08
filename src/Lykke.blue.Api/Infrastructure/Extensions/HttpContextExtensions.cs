@@ -1,6 +1,10 @@
 ﻿using System;
+using System.Net;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Primitives;
+using Microsoft.Rest;
 
 namespace Lykke.blue.Api.Infrastructure.Extensions
 {
@@ -43,6 +47,22 @@ namespace Lykke.blue.Api.Infrastructure.Extensions
                     return (T)Convert.ChangeType(values.ToString(), typeof(T));
             }
             return default(T);
+        }
+
+        public static async Task<ObjectResult> CheckClientResponseForErrors(this HttpOperationResponse pledgeApiResponse)
+        {
+            var message = await pledgeApiResponse.Response.Content.ReadAsStringAsync().ConfigureAwait(false);
+
+            if (pledgeApiResponse.Response.StatusCode == HttpStatusCode.BadRequest)
+            {
+                return new BadRequestObjectResult(message);
+            }
+            else if (pledgeApiResponse.Response.StatusCode == HttpStatusCode.NotFound)
+            {
+                return new NotFoundObjectResult(message);
+            }
+
+            return null;
         }
     }
 }
