@@ -75,7 +75,10 @@ namespace Lykke.blue.Api
                     .AddScheme<LykkeAuthOptions, LykkeAuthHandler>("Bearer", options => { });
 
                 var builder = new ContainerBuilder();
-                var appSettings = Configuration.LoadSettings<AppSettings>();
+                var apiSettings = Environment.IsDevelopment()
+                    ? Configuration.Get<AppSettings>()
+                    : HttpSettingsLoader.Load<AppSettings>(Configuration.GetValue<string>("blueApiSettingsUrl"));
+
                 Log = CreateLogWithSlack(services, appSettings);
 
                 builder.RegisterModule(new ServiceModule(appSettings.Nested(x => x.BlueApi), Log));
