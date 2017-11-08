@@ -1,0 +1,8 @@
+version: '3'
+
+services:
+  lykkeapi2:
+    image: blue-api
+    build:
+      context: ./
+      dockerfile: Dockerfile
