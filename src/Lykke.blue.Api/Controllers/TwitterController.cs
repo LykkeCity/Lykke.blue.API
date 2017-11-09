@@ -1,5 +1,4 @@
 ﻿using Common.Log;
-using Lykke.blue.Api.Infrastructure;
 using Lykke.blue.Api.Models.TwitterModels;
 using Lykke.blue.Api.Strings;
 using Lykke.blue.Service.InspireStream.Client;
@@ -13,8 +12,6 @@ using System.Threading.Tasks;
 
 namespace Lykke.blue.Api.Controllers
 {
-    [LowerVersion(Devices = "IPhone,IPad", LowerVersion = 181)]
-    [LowerVersion(Devices = "android", LowerVersion = 659)]
     [Route("api/twitter")]
     public class TwitterController : Controller
     {
@@ -33,17 +30,17 @@ namespace Lykke.blue.Api.Controllers
         /// <summary>
         /// Get tweets
         /// </summary>
-        [HttpGet]
+        [HttpPost]
         [SwaggerOperation("GetTweets")]
         [ProducesResponseType(typeof(IEnumerable<TweetsResponseModel>), (int)HttpStatusCode.OK)]
-        [ProducesResponseType(typeof(void), (int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
         public async Task<IActionResult> Get([FromBody]TweetsRequestModel model)
         {
             var result = await _inspireStreamClient.GetAsync(model.CreateReques(model));
 
             if (result.Count() < 0)
                 return NotFound(Phrases.TweetsNotFound);
-
 
             return Ok(result);
         }
