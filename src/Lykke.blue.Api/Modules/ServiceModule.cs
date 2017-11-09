@@ -17,6 +17,7 @@ using Lykke.Service.Registration;
 using Lykke.Service.Session;
 using Lykke.SettingsReader;
 using Microsoft.Extensions.DependencyInjection;
+using Lykke.blue.Service.InspireStream.Client;
 
 namespace Lykke.blue.Api.Modules
 {
@@ -75,6 +76,13 @@ namespace Lykke.blue.Api.Modules
                 .As<IPledgesClient>()
                 .WithParameter("serviceUrl", _settings.CurrentValue.Services.PledgesServiceUrl)
                 .WithParameter("log", _log)
+                .SingleInstance();
+
+            builder.RegisterType<InspireStreamClient>()
+                .As<IInspireStreamClient>()
+                .WithParameter("serviceUrl", _settings.CurrentValue.Services.InspireStreamService.ServiceUrl)
+                .WithParameter("log", _log)
+                .WithParameter("timeout", _settings.CurrentValue.Services.InspireStreamService.RequestTimeout)
                 .SingleInstance();
 
             builder.RegisterType<PledgesAPI>()

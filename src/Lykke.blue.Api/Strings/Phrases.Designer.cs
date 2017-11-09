@@ -39,7 +39,7 @@ namespace Lykke.blue.Api.Strings {
         public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("LykkeApi2.Strings.Phrases", typeof(Phrases).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Lykke.blue.Api.Strings.Phrases", typeof(Phrases).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -61,7 +61,7 @@ namespace Lykke.blue.Api.Strings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Record already existsRecord already exists.
+        ///   Looks up a localized string similar to Record already exists.
         /// </summary>
         public static string AlreadyExists {
             get {
@@ -79,56 +79,11 @@ namespace Lykke.blue.Api.Strings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Asset Not Found.
-        /// </summary>
-        public static string AssetNotFound {
-            get {
-                return ResourceManager.GetString("AssetNotFound", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Asset Pair Not Found.
-        /// </summary>
-        public static string AssetPairNotFound {
-            get {
-                return ResourceManager.GetString("AssetPairNotFound", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Client Balance Not Found.
-        /// </summary>
-        public static string ClientBalanceNotFound {
-            get {
-                return ResourceManager.GetString("ClientBalanceNotFound", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Client with the same email is already registered.
-        /// </summary>
-        public static string ClientWithEmailIsRegistered {
-            get {
-                return ResourceManager.GetString("ClientWithEmailIsRegistered", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to App version not supported. Please, update..
         /// </summary>
         public static string DefaultUpdateNeededMsg {
             get {
                 return ResourceManager.GetString("DefaultUpdateNeededMsg", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Email not verified.
-        /// </summary>
-        public static string EmailNotVerified {
-            get {
-                return ResourceManager.GetString("EmailNotVerified", resourceCulture);
             }
         }
         
@@ -142,16 +97,7 @@ namespace Lykke.blue.Api.Strings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Invalid address.
-        /// </summary>
-        public static string InvalidAddress {
-            get {
-                return ResourceManager.GetString("InvalidAddress", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Invalid email format.
+        ///   Looks up a localized string similar to Invalid Email Format.
         /// </summary>
         public static string InvalidEmailFormat {
             get {
@@ -192,33 +138,6 @@ namespace Lykke.blue.Api.Strings {
         public static string MinLength {
             get {
                 return ResourceManager.GetString("MinLength", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Limit Order Not Found.
-        /// </summary>
-        public static string NoLimitOrder {
-            get {
-                return ResourceManager.GetString("NoLimitOrder", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Limit History Not Found.
-        /// </summary>
-        public static string NoLimitsHistory {
-            get {
-                return ResourceManager.GetString("NoLimitsHistory", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Limit Trade History Not Found.
-        /// </summary>
-        public static string NoLimitTradesHistory {
-            get {
-                return ResourceManager.GetString("NoLimitTradesHistory", resourceCulture);
             }
         }
         
@@ -264,6 +183,15 @@ namespace Lykke.blue.Api.Strings {
         public static string TechnicalProblems {
             get {
                 return ResourceManager.GetString("TechnicalProblems", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tweets Not Found.
+        /// </summary>
+        public static string TweetsNotFound {
+            get {
+                return ResourceManager.GetString("TweetsNotFound", resourceCulture);
             }
         }
     }
