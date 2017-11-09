@@ -22,6 +22,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http.Internal;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Lykke.blue.Api.Models.ValidationModels;
 
 namespace Lykke.blue.Api
 {
@@ -53,7 +54,11 @@ namespace Lykke.blue.Api
         {
             try
             {
-                services.AddMvc()
+
+                services.AddMvc(options =>
+                     {
+                         options.Filters.Add<ValidateModelAttribute>();
+                     })
                     .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<Startup>())
                     .AddJsonOptions(options =>
                     {
@@ -115,7 +120,7 @@ namespace Lykke.blue.Api
 
                 app.UseAuthentication();
 
-                app.UseLykkeMiddleware("blue Api", ex => new {Message = "Technical problem"});
+                app.UseLykkeMiddleware("blue Api", ex => new { Message = "Technical problem" });
 
                 app.UseMvc();
                 app.UseSwagger();
@@ -173,12 +178,12 @@ namespace Lykke.blue.Api
             try
             {
                 // NOTE: Service can't receive and process requests here, so you can destroy all resources
-                
+
                 if (Log != null)
                 {
                     await Log.WriteMonitorAsync("", "", "Terminating");
                 }
-                
+
                 ApplicationContainer.Dispose();
             }
             catch (Exception ex)

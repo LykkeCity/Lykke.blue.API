@@ -34,6 +34,7 @@
     <PackageReference Include="Autofac" Version="4.6.2" />
     <PackageReference Include="AutoMapper" Version="6.1.1" />
     <PackageReference Include="FluentValidation.AspNetCore" Version="7.2.1" />
+    <PackageReference Include="Lykke.blue.Service.InspireStream.Client" Version="1.0.3-beta" />
     <PackageReference Include="Lykke.Common" Version="3.0.2" />
     <PackageReference Include="Lykke.Common.ApiLibrary" Version="1.0.14" />
     <PackageReference Include="Lykke.Logs" Version="3.2.2" />
@@ -62,6 +63,27 @@
     <ProjectReference Include="..\Lykke.blue.Api.AzureRepositories\Lykke.blue.Api.AzureRepositories.csproj" />
     <ProjectReference Include="..\Lykke.blue.Api.Core\Lykke.blue.Api.Core.csproj" />
     <ProjectReference Include="..\Lykke.blue.Api.Services\Lykke.blue.Api.Services.csproj" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <Reference Include="Lykke.blue.Service.InspireStream.Client">
+      <HintPath>..\..\..\Lykke.Blue.Twitter.Service\client\Lykke.blue.Service.InspireStream.Client\bin\Debug\netstandard2.0\Lykke.blue.Service.InspireStream.Client.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  
+  <ItemGroup>
+    <Compile Update="Strings\Phrases.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Phrases.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  
+  <ItemGroup>
+    <EmbeddedResource Update="Strings\Phrases.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>Phrases.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
 
   <Target Name="PrepublishScript" BeforeTargets="PrepareForPublish">

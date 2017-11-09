@@ -156,4 +156,10 @@
   <data name="OperationsDetailInfoNotFound" xml:space="preserve">
     <value>Operataion Details Not Found</value>
   </data>
+  <data name="TweetsNotFound" xml:space="preserve">
+    <value>Tweets Not Found</value>
+  </data>
+  <data name="InvalidEmailFormat" xml:space="preserve">
+    <value>Invalid Email Format</value>
+  </data>
 </root>
