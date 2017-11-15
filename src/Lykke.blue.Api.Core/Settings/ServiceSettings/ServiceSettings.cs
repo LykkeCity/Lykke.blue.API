@@ -1,4 +1,6 @@
-﻿namespace Lykke.blue.Api.Core.Settings.ServiceSettings
+﻿using System.Runtime.Serialization;
+
+namespace Lykke.blue.Api.Core.Settings.ServiceSettings
 {
     public class ServiceSettings
     {
@@ -7,6 +9,7 @@
         public string SessionServiceUrl { get; set; }
         public string PledgesServiceUrl { get; set; }
         public InspireStreamService InspireStreamService { get; set; }
+        public string RefLinksServiceUrl { get; set; }
     }
 
     public class InspireStreamService

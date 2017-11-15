@@ -17,6 +17,7 @@ using Lykke.Service.Session;
 using Lykke.SettingsReader;
 using Microsoft.Extensions.DependencyInjection;
 using Lykke.blue.Service.InspireStream.Client;
+using Lykke.blue.Service.ReferralLinks.Client.AutorestClient;
 
 namespace Lykke.blue.Api.Modules
 {
@@ -92,6 +93,11 @@ namespace Lykke.blue.Api.Modules
             builder.RegisterType<PledgesAPI>()
                 .As<IPledgesAPI>()
                 .WithParameter("baseUri", new Uri(_settings.CurrentValue.Services.PledgesServiceUrl))
+                .SingleInstance();
+
+            builder.RegisterType<LykkeReferralLinksService>()
+                .As<ILykkeReferralLinksService>()
+                .WithParameter("baseUri", new Uri(_settings.CurrentValue.Services.RefLinksServiceUrl))
                 .SingleInstance();
         }
 

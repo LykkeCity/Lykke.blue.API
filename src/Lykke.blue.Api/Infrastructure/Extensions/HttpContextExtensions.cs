@@ -49,20 +49,37 @@ namespace Lykke.blue.Api.Infrastructure.Extensions
             return default(T);
         }
 
-        public static async Task<ObjectResult> CheckClientResponseForErrors(this HttpOperationResponse pledgeApiResponse)
+        public static async Task<ObjectResult> CheckClientResponseForErrors(this HttpOperationResponse httpResponse)
         {
-            var message = await pledgeApiResponse.Response.Content.ReadAsStringAsync().ConfigureAwait(false);
+            var message = await httpResponse.Response.Content.ReadAsStringAsync().ConfigureAwait(false);
 
-            if (pledgeApiResponse.Response.StatusCode == HttpStatusCode.BadRequest)
+            if (httpResponse.Response.IsSuccessStatusCode)
+            {
+                return null;
+            }
+
+            if (httpResponse.Response.StatusCode == HttpStatusCode.BadRequest)
             {
                 return new BadRequestObjectResult(message);
             }
-            else if (pledgeApiResponse.Response.StatusCode == HttpStatusCode.NotFound)
+            else if (httpResponse.Response.StatusCode == HttpStatusCode.NotFound)
             {
                 return new NotFoundObjectResult(message);
             }
+            else
+            {
+                var result = new ObjectResult(message);
+                result.StatusCode = (int) HttpStatusCode.InternalServerError;
+                return result;
+            }
+        }
 
-            return null;
+        //create separate methods for getting code and msg from httpResponse, return StatusCode(httpCode, msg) from controller
+
+        public static async Task<string> GetStatusCodeAndMessage(this HttpOperationResponse httpResponse)
+        {
+            var message = await httpResponse.Response.Content.ReadAsStringAsync().ConfigureAwait(false);
+            return $"HttpCode:{httpResponse.Response.StatusCode}, Message:{message}";
         }
     }
 }
