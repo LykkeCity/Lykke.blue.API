@@ -82,6 +82,13 @@ namespace Lykke.blue.Api.Modules
                 .WithParameter("timeout", _settings.CurrentValue.Services.InspireStreamService.RequestTimeout)
                 .SingleInstance();
 
+            builder.RegisterType<InspireStreamClient>()
+                .As<IInspireStreamClient>()
+                .WithParameter("serviceUrl", _settings.CurrentValue.Services.InspireStreamService.ServiceUrl)
+                .WithParameter("log", _log)
+                .WithParameter("timeout", _settings.CurrentValue.Services.InspireStreamService.RequestTimeout)
+                .SingleInstance();
+
             builder.RegisterType<PledgesAPI>()
                 .As<IPledgesAPI>()
                 .WithParameter("baseUri", new Uri(_settings.CurrentValue.Services.PledgesServiceUrl))
