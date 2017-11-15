@@ -2,6 +2,7 @@
 using Lykke.blue.Api.Models.TwitterModels;
 using Lykke.blue.Api.Strings;
 using Lykke.blue.Service.InspireStream.Client;
+using Lykke.blue.Service.InspireStream.Client.AutorestClient.Models;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.SwaggerGen.Annotations;
 using System;
