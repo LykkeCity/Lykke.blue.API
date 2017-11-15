@@ -99,7 +99,7 @@ namespace Lykke.blue.Api.Strings {
         /// <summary>
         ///   Looks up a localized string similar to Invalid Email Format.
         /// </summary>
-        public static string InvalidEmailFormat {
+        internal static string InvalidEmailFormat {
             get {
                 return ResourceManager.GetString("InvalidEmailFormat", resourceCulture);
             }
@@ -201,15 +201,6 @@ namespace Lykke.blue.Api.Strings {
         internal static string UsersByPartnerIdNotFound {
             get {
                 return ResourceManager.GetString("UsersByPartnerIdNotFound", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Tweets Not Found.
-        /// </summary>
-        public static string TweetsNotFound {
-            get {
-                return ResourceManager.GetString("TweetsNotFound", resourceCulture);
             }
         }
     }
