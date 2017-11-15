@@ -22,7 +22,7 @@ namespace Lykke.blue.Api.Strings {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    public class Phrases {
+    internal class Phrases {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
@@ -36,7 +36,7 @@ namespace Lykke.blue.Api.Strings {
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        public static global::System.Resources.ResourceManager ResourceManager {
+        internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
                     global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Lykke.blue.Api.Strings.Phrases", typeof(Phrases).Assembly);
@@ -51,7 +51,7 @@ namespace Lykke.blue.Api.Strings {
         ///   resource lookups using this strongly typed resource class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        public static global::System.Globalization.CultureInfo Culture {
+        internal static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
@@ -63,7 +63,7 @@ namespace Lykke.blue.Api.Strings {
         /// <summary>
         ///   Looks up a localized string similar to Record already exists.
         /// </summary>
-        public static string AlreadyExists {
+        internal static string AlreadyExists {
             get {
                 return ResourceManager.GetString("AlreadyExists", resourceCulture);
             }
@@ -72,7 +72,7 @@ namespace Lykke.blue.Api.Strings {
         /// <summary>
         ///   Looks up a localized string similar to Sorry, your app version is not supported anymore. Please update your app from Google Play and continue enjoying the service..
         /// </summary>
-        public static string AndroidUpdateNeededMsg {
+        internal static string AndroidUpdateNeededMsg {
             get {
                 return ResourceManager.GetString("AndroidUpdateNeededMsg", resourceCulture);
             }
@@ -81,7 +81,7 @@ namespace Lykke.blue.Api.Strings {
         /// <summary>
         ///   Looks up a localized string similar to App version not supported. Please, update..
         /// </summary>
-        public static string DefaultUpdateNeededMsg {
+        internal static string DefaultUpdateNeededMsg {
             get {
                 return ResourceManager.GetString("DefaultUpdateNeededMsg", resourceCulture);
             }
@@ -90,7 +90,7 @@ namespace Lykke.blue.Api.Strings {
         /// <summary>
         ///   Looks up a localized string similar to Field should not be empty.
         /// </summary>
-        public static string FieldShouldNotBeEmpty {
+        internal static string FieldShouldNotBeEmpty {
             get {
                 return ResourceManager.GetString("FieldShouldNotBeEmpty", resourceCulture);
             }
@@ -99,7 +99,7 @@ namespace Lykke.blue.Api.Strings {
         /// <summary>
         ///   Looks up a localized string similar to Invalid Email Format.
         /// </summary>
-        public static string InvalidEmailFormat {
+        internal static string InvalidEmailFormat {
             get {
                 return ResourceManager.GetString("InvalidEmailFormat", resourceCulture);
             }
@@ -108,7 +108,7 @@ namespace Lykke.blue.Api.Strings {
         /// <summary>
         ///   Looks up a localized string similar to {PropertyName} is not valid.
         /// </summary>
-        public static string InvalidPropertyValue {
+        internal static string InvalidPropertyValue {
             get {
                 return ResourceManager.GetString("InvalidPropertyValue", resourceCulture);
             }
@@ -117,7 +117,7 @@ namespace Lykke.blue.Api.Strings {
         /// <summary>
         ///   Looks up a localized string similar to Invalid value.
         /// </summary>
-        public static string InvalidValue {
+        internal static string InvalidValue {
             get {
                 return ResourceManager.GetString("InvalidValue", resourceCulture);
             }
@@ -126,7 +126,7 @@ namespace Lykke.blue.Api.Strings {
         /// <summary>
         ///   Looks up a localized string similar to Maximum length is {0}.
         /// </summary>
-        public static string MaxLength {
+        internal static string MaxLength {
             get {
                 return ResourceManager.GetString("MaxLength", resourceCulture);
             }
@@ -135,7 +135,7 @@ namespace Lykke.blue.Api.Strings {
         /// <summary>
         ///   Looks up a localized string similar to Minimum length is {0}.
         /// </summary>
-        public static string MinLength {
+        internal static string MinLength {
             get {
                 return ResourceManager.GetString("MinLength", resourceCulture);
             }
@@ -144,7 +144,7 @@ namespace Lykke.blue.Api.Strings {
         /// <summary>
         ///   Looks up a localized string similar to {0} should not be empty.
         /// </summary>
-        public static string NotEmptyField {
+        internal static string NotEmptyField {
             get {
                 return ResourceManager.GetString("NotEmptyField", resourceCulture);
             }
@@ -153,7 +153,7 @@ namespace Lykke.blue.Api.Strings {
         /// <summary>
         ///   Looks up a localized string similar to Not enough funds.
         /// </summary>
-        public static string NotEnoughFunds {
+        internal static string NotEnoughFunds {
             get {
                 return ResourceManager.GetString("NotEnoughFunds", resourceCulture);
             }
@@ -162,7 +162,7 @@ namespace Lykke.blue.Api.Strings {
         /// <summary>
         ///   Looks up a localized string similar to Service temporarily unavailable. Sorry for the inconvenience..
         /// </summary>
-        public static string OperationDisabled {
+        internal static string OperationDisabled {
             get {
                 return ResourceManager.GetString("OperationDisabled", resourceCulture);
             }
@@ -171,7 +171,7 @@ namespace Lykke.blue.Api.Strings {
         /// <summary>
         ///   Looks up a localized string similar to Operataion Details Not Found.
         /// </summary>
-        public static string OperationsDetailInfoNotFound {
+        internal static string OperationsDetailInfoNotFound {
             get {
                 return ResourceManager.GetString("OperationsDetailInfoNotFound", resourceCulture);
             }
@@ -180,7 +180,7 @@ namespace Lykke.blue.Api.Strings {
         /// <summary>
         ///   Looks up a localized string similar to We are experiencing technical problems. Please try again..
         /// </summary>
-        public static string TechnicalProblems {
+        internal static string TechnicalProblems {
             get {
                 return ResourceManager.GetString("TechnicalProblems", resourceCulture);
             }
@@ -189,9 +189,18 @@ namespace Lykke.blue.Api.Strings {
         /// <summary>
         ///   Looks up a localized string similar to Tweets Not Found.
         /// </summary>
-        public static string TweetsNotFound {
+        internal static string TweetsNotFound {
             get {
                 return ResourceManager.GetString("TweetsNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Users Not Found.
+        /// </summary>
+        internal static string UsersByPartnerIdNotFound {
+            get {
+                return ResourceManager.GetString("UsersByPartnerIdNotFound", resourceCulture);
             }
         }
     }

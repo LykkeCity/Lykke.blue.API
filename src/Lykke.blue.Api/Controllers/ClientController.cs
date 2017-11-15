@@ -1,16 +1,22 @@
-﻿using System;
-using System.Net;
-using System.Threading.Tasks;
-using AutoMapper;
+﻿using AutoMapper;
 using Common.Log;
-using Lykke.blue.Api.Credentials;
+using Lykke.blue.Api.Core.Settings.ServiceSettings;
 using Lykke.blue.Api.Infrastructure;
+using Lykke.blue.Api.Models.ClientsModels;
 using Lykke.blue.Api.Requests;
 using Lykke.blue.Api.Responses;
+using Lykke.blue.Api.Strings;
+using Lykke.Service.ClientAccount.Client;
+using Lykke.Service.ClientAccount.Client.Models;
 using Lykke.Service.Registration;
 using Lykke.Service.Registration.Models;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.SwaggerGen.Annotations;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Threading.Tasks;
 
 namespace Lykke.blue.Api.Controllers
 {
@@ -21,19 +27,22 @@ namespace Lykke.blue.Api.Controllers
     {
         private readonly ILog _log;
         private readonly ILykkeRegistrationClient _lykkeRegistrationClient;
-        private readonly ClientAccountLogic _clientAccountLogic;
+        private readonly IClientAccountClient _clientAccountClient;
         private readonly IRequestContext _requestContext;
+        private readonly BlueApiSettings _blueApiSettings;
 
         public ClientController(
             ILog log,
             ILykkeRegistrationClient lykkeRegistrationClient,
-            ClientAccountLogic clientAccountLogic,
-            IRequestContext requestContext)
+            IClientAccountClient clientAccountClient,
+            IRequestContext requestContext,
+            BlueApiSettings blueApiSettings)
         {
             _log = log ?? throw new ArgumentNullException(nameof(log));
             _lykkeRegistrationClient = lykkeRegistrationClient ?? throw new ArgumentNullException(nameof(lykkeRegistrationClient));
-            _clientAccountLogic = clientAccountLogic;
+            _clientAccountClient = clientAccountClient;
             _requestContext = requestContext ?? throw new ArgumentNullException(nameof(requestContext));
+            _blueApiSettings = blueApiSettings;
         }
 
         /// <summary>
@@ -57,6 +66,46 @@ namespace Lykke.blue.Api.Controllers
                 return BadRequest(new { message = authResult.ErrorMessage });
 
             return Ok(Mapper.Map<AuthResponseModel>(authResult));
+        }
+
+        /// <summary>
+        /// Return the amount of registered Lykke.blue users by partner.
+        /// </summary>   
+        [HttpGet("getUsersCountByPartner")]
+        [SwaggerOperation("GeUsersCountRegistered")]
+        [ProducesResponseType(typeof(UsersCountResponseModel), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(int), (int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType(typeof(int), (int)HttpStatusCode.NotFound)]
+        public async Task<IActionResult> GetRegisteredUsersCount()
+        {
+            string partnerId = _blueApiSettings.DefaultBlueLifePartnerId;
+
+            int? count = await _clientAccountClient.GetUsersCountByPartnerId(partnerId);
+
+            if (!count.HasValue)
+                return NotFound(Phrases.UsersByPartnerIdNotFound);
+
+            return Ok(UsersCountResponseModel.Create(count.Value));
+        }
+
+        /// <summary>
+        /// Return registered Lykke.blue users by partner.
+        /// </summary>   
+        [HttpGet("getUsersByPartner")]
+        [SwaggerOperation("GeUsersByPartnerId")]
+        [ProducesResponseType(typeof(IEnumerable<ClientModel>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(int), (int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType(typeof(int), (int)HttpStatusCode.NotFound)]
+        public async Task<IActionResult> GetRegisteredUsers()
+        {
+            string partnerId = _blueApiSettings.DefaultBlueLifePartnerId;
+
+            var result = await _clientAccountClient.GetUsersByPartnerId(partnerId);
+
+            if (result != null && result.Count() > 0)
+                return Ok(result);
+
+            return NotFound(Phrases.UsersByPartnerIdNotFound);
         }
     }
 }

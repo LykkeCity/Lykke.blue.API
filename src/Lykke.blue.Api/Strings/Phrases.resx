@@ -162,4 +162,7 @@
   <data name="InvalidEmailFormat" xml:space="preserve">
     <value>Invalid Email Format</value>
   </data>
+  <data name="UsersByPartnerIdNotFound" xml:space="preserve">
+    <value>Users Not Found</value>
+  </data>
 </root>

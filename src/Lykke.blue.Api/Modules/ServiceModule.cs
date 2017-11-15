@@ -6,7 +6,6 @@ using Lykke.blue.Api.blues;
 using Lykke.blue.Api.Core.Identity;
 using Lykke.blue.Api.Core.Services;
 using Lykke.blue.Api.Core.Settings.ServiceSettings;
-using Lykke.blue.Api.Credentials;
 using Lykke.blue.Api.Infrastructure;
 using Lykke.blue.Api.Services.Identity;
 using Lykke.Service.ClientAccount.Client;
@@ -25,7 +24,6 @@ namespace Lykke.blue.Api.Modules
     {
         private readonly IReloadingManager<ApiSettings> _settings;
         private readonly ILog _log;
-        // NOTE: you can remove it if you don't need to use IServiceCollection extensions to register service specific dependencies
         private readonly IServiceCollection _services;
 
         public ServiceModule(IReloadingManager<ApiSettings> settings, ILog log)
@@ -42,10 +40,9 @@ namespace Lykke.blue.Api.Modules
             RegisterLocalServices(builder);
             RegisterExternalServices(builder);
 
-            _services.AddSingleton<ClientAccountLogic>();
-
             builder.RegisterType<RequestContext>().As<IRequestContext>().InstancePerLifetimeScope();
             builder.RegisterType<LykkePrincipal>().As<ILykkePrincipal>().InstancePerLifetimeScope();
+            builder.RegisterInstance(_settings.CurrentValue.BlueApiSettings);
 
             builder.Populate(_services);
         }
