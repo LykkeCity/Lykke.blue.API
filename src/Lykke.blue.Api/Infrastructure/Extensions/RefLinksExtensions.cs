@@ -12,7 +12,7 @@ namespace Lykke.blue.Api.Infrastructure.Extensions
         {
             return new InvitationReferralLinkRequest { SenderClientId = src.SenderClientId };
         }
-        public static ClaimReferralLinkRequest ConvertToServiceModel(this ClaimInvitationLinkModel src)
+        public static ClaimReferralLinkRequest ConvertToServiceModel(this ClaimRefLinkModel src)
         {
             return new ClaimReferralLinkRequest {
                 IsNewClient = src.IsNewClient,
@@ -30,5 +30,42 @@ namespace Lykke.blue.Api.Infrastructure.Extensions
                 Amount = src.Amount,
             };
         }
+        public static TransferToLykkeWallet ConvertToServiceModel(this TransferToLykkeWalletModel src)
+        {
+            return new TransferToLykkeWallet
+            {
+                ClientId = src.ClientId,
+                ReferralLinkId = src.ReferralLinkId,
+                PrevTempPrivateKey = src.PrevTempPrivateKey
+            };
+        }
+        public static OffchainChannelProcessModel ConvertToServiceModel(this ProcessChannelModel src)
+        {
+            return new OffchainChannelProcessModel
+            {
+                TransferId = src.TransferId,
+                ClientId = src.ClientId,
+                SignedChannelTransaction = src.SignedChannelTransaction
+            };
+        }
+        public static OffchainFinalizeModel ConvertToServiceModel(this FinalizeTransferModel src)
+        {
+            return new OffchainFinalizeModel
+            {
+                TransferId = src.TransferId,
+                ClientRevokePubKey = src.ClientRevokePubKey,
+                ClientRevokeEncryptedPrivateKey = src.ClientRevokeEncryptedPrivateKey,
+                SignedTransferTransaction = src.SignedTransferTransaction,
+                ClientId = src.ClientId,
+                RefLinkId = src.RefLinkId
+            };
+        }
+
+
+
+        
+
+
+
     }
 }

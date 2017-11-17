@@ -36,7 +36,6 @@
     <PackageReference Include="AutoMapper" Version="6.1.1" />
     <PackageReference Include="FluentValidation.AspNetCore" Version="7.2.1" />
     <PackageReference Include="Lykke.blue.Service.InspireStream.Client" Version="1.0.3-beta" />
-    <PackageReference Include="Lykke.blue.Service.ReferralLinks.Client" Version="1.0.3-beta" />
     <PackageReference Include="Lykke.Common" Version="3.0.2" />
     <PackageReference Include="Lykke.Common.ApiLibrary" Version="1.0.14" />
     <PackageReference Include="Lykke.Logs" Version="3.2.2" />
@@ -77,6 +76,12 @@
   
   <ItemGroup>
     <Folder Include="Credentials\" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <Reference Include="Lykke.blue.Service.ReferralLinks.Client">
+      <HintPath>..\..\..\Lykke.Service.ReferralLinks\client\Lykke.blue.Service.ReferralLinks.Client\bin\Debug\netstandard2.0\Lykke.blue.Service.ReferralLinks.Client.dll</HintPath>
+    </Reference>
   </ItemGroup>
   
   <ItemGroup>

@@ -8,6 +8,12 @@ using Microsoft.Rest;
 
 namespace Lykke.blue.Api.Infrastructure.Extensions
 {
+    public class HttpCodeAndMessage
+    {
+        public HttpStatusCode HttpCode { get; set; }
+        public string HttpMessage { get; set; }
+    }
+
     public static class HttpContextExtensions
     {
         public static Uri GetUri(this HttpRequest request)
@@ -76,10 +82,10 @@ namespace Lykke.blue.Api.Infrastructure.Extensions
 
         //create separate methods for getting code and msg from httpResponse, return StatusCode(httpCode, msg) from controller
 
-        public static async Task<string> GetStatusCodeAndMessage(this HttpOperationResponse httpResponse)
+        public static async Task<HttpCodeAndMessage> GetHttpCodeAndMessage(this HttpOperationResponse httpResponse)
         {
             var message = await httpResponse.Response.Content.ReadAsStringAsync().ConfigureAwait(false);
-            return $"HttpCode:{httpResponse.Response.StatusCode}, Message:{message}";
+            return new HttpCodeAndMessage { HttpCode = httpResponse.Response.StatusCode, HttpMessage = message };
         }
     }
 }
