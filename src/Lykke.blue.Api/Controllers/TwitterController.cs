@@ -40,7 +40,7 @@ namespace Lykke.blue.Api.Controllers
         {
             var result = await _inspireStreamClient.GetAsync(model.CreateReques(model));
 
-            if (result.Count() < 0)
+            if (result == null || result?.Count() < 0)
                 return NotFound(Phrases.TweetsNotFound);
 
             return Ok(result);
