@@ -54,11 +54,11 @@ namespace Lykke.blue.Api.Modules
                 .As<IClientAccountService>()
                 .WithParameter("baseUri", new Uri(_settings.CurrentValue.Services.ClientAccountServiceUrl));
 
-            builder.RegisterType<ClientAccountClient>()
-                .As<IClientAccountClient>()
-                .WithParameter("serviceUrl", _settings.CurrentValue.Services.ClientAccountServiceUrl)
-                .WithParameter("log", _log)
-                .SingleInstance();
+            //builder.RegisterType<ClientAccountClient>()
+            //    .As<IClientAccountClient>()
+            //    .WithParameter("serviceUrl", _settings.CurrentValue.Services.ClientAccountServiceUrl)
+            //    .WithParameter("log", _log)
+            //    .SingleInstance();
 
             builder.RegisterType<LykkeRegistrationClient>()
                 .As<ILykkeRegistrationClient>()
@@ -94,6 +94,9 @@ namespace Lykke.blue.Api.Modules
                 .As<IPledgesAPI>()
                 .WithParameter("baseUri", new Uri(_settings.CurrentValue.Services.PledgesServiceUrl))
                 .SingleInstance();
+
+            builder.RegisterLykkeServiceClient(_settings.CurrentValue.Services.ClientAccountServiceUrl);
+
 
             builder.RegisterType<LykkeReferralLinksService>()
                 .As<ILykkeReferralLinksService>()
