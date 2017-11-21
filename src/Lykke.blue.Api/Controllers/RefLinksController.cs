@@ -17,12 +17,10 @@ namespace Lykke.blue.Api.Controllers
     [Route("api/refLinks")]
     public class RefLinksController : BluApiBaseController
     {
-        private readonly ILog _log;
         private readonly ILykkeReferralLinksService _referralLinksService;
 
         public RefLinksController(ILog log, ILykkeReferralLinksService refSrv) : base (log)
         {
-            _log = log;
             _referralLinksService = refSrv;
         }     
 
@@ -93,7 +91,7 @@ namespace Lykke.blue.Api.Controllers
         [SwaggerOperation("GetReferralLinksStatisticsBySenderId")]
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
         [ProducesResponseType(typeof(GetReferralLinksStatisticsBySenderIdResponse), (int)HttpStatusCode.OK)]
-        public async Task<IActionResult> GetReferralLinksStatisticsBySenderId(RefLinkStatisticsModel request)
+        public async Task<IActionResult> GetReferralLinksStatisticsBySenderId([FromBody]RefLinkStatisticsModel request)
         {
             var result = await ExecuteRefLinksMethod((p) => _referralLinksService.GetReferralLinksStatisticsBySenderIdWithHttpMessagesAsync(p), request.ConvertToServiceModel(), request.LogMessage);
             return result;
