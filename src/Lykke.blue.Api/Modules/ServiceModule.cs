@@ -102,6 +102,9 @@ namespace Lykke.blue.Api.Modules
                 .As<ILykkeReferralLinksService>()
                 .WithParameter("baseUri", new Uri(_settings.CurrentValue.Services.RefLinksServiceUrl))
                 .SingleInstance();
+
+            builder.RegisterLykkeServiceClient(_settings.CurrentValue.Services.ClientAccountServiceUrl);
+
         }
 
         private static void RegisterLocalServices(ContainerBuilder builder)
