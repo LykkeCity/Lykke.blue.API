@@ -27,20 +27,20 @@ namespace Lykke.blue.Api.Controllers
     {
         private readonly ILog _log;
         private readonly ILykkeRegistrationClient _lykkeRegistrationClient;
-        private readonly IClientAccountClient _clientAccountClient;
+        private readonly IPartnersClient _partnersClient;
         private readonly IRequestContext _requestContext;
         private readonly BlueApiSettings _blueApiSettings;
 
         public ClientController(
             ILog log,
             ILykkeRegistrationClient lykkeRegistrationClient,
-            IClientAccountClient clientAccountClient,
+            IPartnersClient partnersClient,
             IRequestContext requestContext,
             BlueApiSettings blueApiSettings)
         {
             _log = log ?? throw new ArgumentNullException(nameof(log));
             _lykkeRegistrationClient = lykkeRegistrationClient ?? throw new ArgumentNullException(nameof(lykkeRegistrationClient));
-            _clientAccountClient = clientAccountClient;
+            _partnersClient = partnersClient;
             _requestContext = requestContext ?? throw new ArgumentNullException(nameof(requestContext));
             _blueApiSettings = blueApiSettings;
         }
@@ -80,32 +80,12 @@ namespace Lykke.blue.Api.Controllers
         {
             string partnerId = _blueApiSettings.DefaultBlueLifePartnerId;
 
-            int? count = await _clientAccountClient.GetUsersCountByPartnerId(partnerId);
+            int? count = await _partnersClient.GetUsersCountByPartnerId(partnerId);
 
             if (!count.HasValue)
                 return NotFound(Phrases.UsersByPartnerIdNotFound);
 
             return Ok(UsersCountResponseModel.Create(count.Value));
-        }
-
-        /// <summary>
-        /// Return registered Lykke.blue users by partner.
-        /// </summary>   
-        [HttpGet("getUsersByPartner")]
-        [SwaggerOperation("GeUsersByPartnerId")]
-        [ProducesResponseType(typeof(IEnumerable<ClientModel>), (int)HttpStatusCode.OK)]
-        [ProducesResponseType(typeof(int), (int)HttpStatusCode.BadRequest)]
-        [ProducesResponseType(typeof(int), (int)HttpStatusCode.NotFound)]
-        public async Task<IActionResult> GetRegisteredUsers()
-        {
-            string partnerId = _blueApiSettings.DefaultBlueLifePartnerId;
-
-            var result = await _clientAccountClient.GetUsersByPartnerId(partnerId);
-
-            if (result != null && result.Count() > 0)
-                return Ok(result);
-
-            return NotFound(Phrases.UsersByPartnerIdNotFound);
         }
     }
 }
