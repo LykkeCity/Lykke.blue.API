@@ -9,7 +9,6 @@ namespace Lykke.blue.Api.Models.RefLinksModels
     public class ProcessChannelModel : RefLinksBaseRequestModel<OffchainChannelProcessModel>
     {
         public string TransferId { get; set; }
-        public string ClientId { get; set; }
         public string SignedChannelTransaction { get; set; }
 
         [IgnoreDataMember]
@@ -17,7 +16,7 @@ namespace Lykke.blue.Api.Models.RefLinksModels
 
         public override OffchainChannelProcessModel ConvertToServiceModel()
         {
-            return new OffchainChannelProcessModel { ClientId = this.ClientId, SignedChannelTransaction = this.SignedChannelTransaction, TransferId = this.TransferId };
+            return new OffchainChannelProcessModel { SignedChannelTransaction = this.SignedChannelTransaction, TransferId = this.TransferId };
         }
     }
 }

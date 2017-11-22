@@ -8,7 +8,6 @@ namespace Lykke.blue.Api.Models.RefLinksModels
 {
     public class ClaimRefLinkModel : RefLinksBaseRequestModel<ClaimReferralLinkRequest>
     {
-        public string RecipientClientId { get; set; }
         public string ReferalLinkId { get; set; }
         public string ReferalLinkUrl { get; set; }
         public bool IsNewClient { get; set; }
@@ -21,7 +20,6 @@ namespace Lykke.blue.Api.Models.RefLinksModels
             return new ClaimReferralLinkRequest
             {
                 IsNewClient = this.IsNewClient,
-                RecipientClientId = this.RecipientClientId,
                 ReferalLinkId = this.ReferalLinkId,
                 ReferalLinkUrl = this.ReferalLinkUrl
             };

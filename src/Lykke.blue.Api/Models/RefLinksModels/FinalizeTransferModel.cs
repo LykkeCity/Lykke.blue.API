@@ -11,7 +11,6 @@ namespace Lykke.blue.Api.Models.RefLinksModels
         public string ClientRevokePubKey { get; set; }
         public string ClientRevokeEncryptedPrivateKey { get; set; }
         public string SignedTransferTransaction { get; set; }
-        public string ClientId { get; set; }
         public string RefLinkId { get; set; }
 
         public override string LogMessage { get => "Finalize offchain transfer"; }
@@ -24,7 +23,6 @@ namespace Lykke.blue.Api.Models.RefLinksModels
                 ClientRevokePubKey = this.ClientRevokePubKey,
                 ClientRevokeEncryptedPrivateKey = this.ClientRevokeEncryptedPrivateKey,
                 SignedTransferTransaction = this.SignedTransferTransaction,
-                ClientId = this.ClientId,
                 RefLinkId = this.RefLinkId
             };
         }

@@ -8,7 +8,6 @@ namespace Lykke.blue.Api.Models.RefLinksModels
 {
     public class TransferToLykkeWalletModel : RefLinksBaseRequestModel<TransferToLykkeWallet>
     {
-        public string ClientId { get; set; }
         public string ReferralLinkId { get; set; }
         public string PrevTempPrivateKey { get; set; }
 
@@ -17,7 +16,7 @@ namespace Lykke.blue.Api.Models.RefLinksModels
         
         public override TransferToLykkeWallet ConvertToServiceModel()
         {
-            return new TransferToLykkeWallet { ClientId = this.ClientId, PrevTempPrivateKey = this.PrevTempPrivateKey, ReferralLinkId = this.ReferralLinkId };
+            return new TransferToLykkeWallet { PrevTempPrivateKey = this.PrevTempPrivateKey, ReferralLinkId = this.ReferralLinkId };
 
         }
     }

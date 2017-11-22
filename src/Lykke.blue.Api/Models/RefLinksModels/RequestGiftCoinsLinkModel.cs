@@ -8,7 +8,6 @@ namespace Lykke.blue.Api.Models.RefLinksModels
 {
     public class RequestGiftCoinsLinkModel : RefLinksBaseRequestModel<GiftCoinsReferralLinkRequest>
     {
-        public string SenderClientId { get; set; }
         public string Asset { get; set; }
         public double Amount { get; set; }
 
@@ -21,7 +20,6 @@ namespace Lykke.blue.Api.Models.RefLinksModels
             {
                 Amount = this.Amount,
                 Asset = this.Asset,
-                SenderClientId = this.SenderClientId
             };
         }
     }
