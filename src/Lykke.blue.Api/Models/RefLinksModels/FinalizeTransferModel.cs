@@ -1,6 +1,7 @@
 ﻿using Lykke.blue.Service.ReferralLinks.Client.AutorestClient.Models;
 using System;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
 using System.Text;
 
 namespace Lykke.blue.Api.Models.RefLinksModels
@@ -13,6 +14,7 @@ namespace Lykke.blue.Api.Models.RefLinksModels
         public string SignedTransferTransaction { get; set; }
         public string RefLinkId { get; set; }
 
+        [IgnoreDataMember]
         public override string LogMessage { get => "Finalize offchain transfer"; }
 
         public override OffchainFinalizeModel ConvertToServiceModel()
