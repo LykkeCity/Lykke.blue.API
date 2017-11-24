@@ -29,7 +29,32 @@ namespace Lykke.blue.Api.Controllers
         {
             _referralLinksService = refSrv;
             _requestContext = requestContext;
-        }     
+        }
+
+        [HttpGet("url/{url}")]
+        [AllowAnonymous]
+        [SwaggerOperation("GetReferralLinkByUrl")]
+        [ProducesResponseType(typeof(ErrorResponseModel), (int)HttpStatusCode.NotFound)]
+        [ProducesResponseType(typeof(GetReferralLinkResponse), (int)HttpStatusCode.OK)]
+        public async Task<IActionResult> GetReferralLinkByUrl(string url)
+        {
+            var decoded = WebUtility.UrlDecode(url);
+
+            var result = await ExecuteRefLinksMethod((p) => _referralLinksService.GetReferralLinkByUrlWithHttpMessagesAsync(p), decoded, "Get Referral Link By Url");
+            return result;
+        }
+
+        [HttpGet("id/{id}")]
+        [AllowAnonymous]
+        [SwaggerOperation("GetReferralLinkById")]
+        [ProducesResponseType(typeof(string), (int)HttpStatusCode.NotFound)]
+        [ProducesResponseType(typeof(string), (int)HttpStatusCode.OK)]
+        public async Task<IActionResult> GetReferralLinkById(string id)
+        {
+            var result = await ExecuteRefLinksMethod((p) => _referralLinksService.GetReferralLinkByIdWithHttpMessagesAsync(p), id, "Get Referral Link By Id");
+            return result;
+        }
+
 
         [HttpGet("request/invitationLink")]
         [SwaggerOperation("RequestInvitationReferralLink")]
