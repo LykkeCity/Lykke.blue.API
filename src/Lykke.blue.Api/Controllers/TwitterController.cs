@@ -4,6 +4,7 @@ using Lykke.blue.Api.Strings;
 using Lykke.blue.Service.InspireStream.Client;
 using Lykke.blue.Service.InspireStream.Client.AutorestClient.Models;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json.Linq;
 using Swashbuckle.SwaggerGen.Annotations;
 using System;
 using System.Collections.Generic;
@@ -44,6 +45,24 @@ namespace Lykke.blue.Api.Controllers
                 return NotFound(Phrases.TweetsNotFound);
 
             return Ok(result);
+        }
+
+        /// <summary>
+        /// Get tweets and return json
+        /// </summary>
+        [HttpPost("getTweetsJSON")]
+        [SwaggerOperation("GetTweetsJSON")]
+        [ProducesResponseType(typeof(IEnumerable<JObject>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
+        public async Task<IActionResult> GetTweetsJSON([FromBody]TweetsRequestModel model)
+        {
+            var result = await _inspireStreamClient.GetAsync(model.CreateReques(model));
+
+            if (result == null || result?.Count() < 0)
+                return NotFound(Phrases.TweetsNotFound);
+
+            return Ok(result.Select(t => JObject.Parse(t.TweetJSON)));
         }
     }
 }
