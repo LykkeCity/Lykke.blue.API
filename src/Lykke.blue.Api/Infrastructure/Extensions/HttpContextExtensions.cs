@@ -57,6 +57,14 @@ namespace Lykke.blue.Api.Infrastructure.Extensions
 
         public static async Task<ObjectResult> CheckClientResponseForErrors(this HttpOperationResponse httpResponse)
         {
+            var internalServerError = new ObjectResult("Service call returned null HttpOperationResponse.");
+            internalServerError.StatusCode = (int)HttpStatusCode.InternalServerError;
+
+            if (httpResponse == null)
+            {
+                return internalServerError;
+            }
+
             var message = await httpResponse.Response.Content.ReadAsStringAsync().ConfigureAwait(false);
 
             if (httpResponse.Response.IsSuccessStatusCode)
@@ -74,9 +82,8 @@ namespace Lykke.blue.Api.Infrastructure.Extensions
             }
             else
             {
-                var result = new ObjectResult(message);
-                result.StatusCode = (int) HttpStatusCode.InternalServerError;
-                return result;
+                internalServerError.Value = message;
+                return internalServerError;
             }
         }
 
