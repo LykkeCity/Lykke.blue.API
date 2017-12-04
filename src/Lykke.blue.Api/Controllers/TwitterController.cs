@@ -30,26 +30,12 @@ namespace Lykke.blue.Api.Controllers
         }
 
         /// <summary>
-        /// Get tweets
+        /// Get tweets cash data
         /// </summary>
-        [HttpPost]
-        [SwaggerOperation("GetTweets")]
-        [ProducesResponseType(typeof(IEnumerable<TweetsResponseModel>), (int)HttpStatusCode.OK)]
-        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
-        [ProducesResponseType((int)HttpStatusCode.NotFound)]
-        public async Task<IActionResult> Get([FromBody]TweetsRequestModel model)
-        {
-            var result = await _inspireStreamClient.GetAsync(model.CreateReques(model));
-
-            if (result == null || result?.Count() < 0)
-                return NotFound(Phrases.TweetsNotFound);
-
-            return Ok(result);
-        }
-
-        /// <summary>
-        /// Get tweets and return json
-        /// </summary>
+        /// <param name="model">Tweets request model by which we search for tweets</param>
+        /// <returns>
+        /// Return tweets json format according twitter api
+        /// </returns>
         [HttpPost("getTweetsJSON")]
         [SwaggerOperation("GetTweetsJSON")]
         [ProducesResponseType(typeof(IEnumerable<JObject>), (int)HttpStatusCode.OK)]
