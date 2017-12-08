@@ -1,8 +1,5 @@
 ﻿using Lykke.blue.Service.ReferralLinks.Client.AutorestClient.Models;
-using System;
-using System.Collections.Generic;
 using System.Runtime.Serialization;
-using System.Text;
 
 namespace Lykke.blue.Api.Models.RefLinksModels
 {
@@ -20,7 +17,6 @@ namespace Lykke.blue.Api.Models.RefLinksModels
             return new ClaimReferralLinkRequest
             {
                 IsNewClient = this.IsNewClient,
-                ReferalLinkId = this.ReferalLinkId,
                 ReferalLinkUrl = this.ReferalLinkUrl
             };
         }

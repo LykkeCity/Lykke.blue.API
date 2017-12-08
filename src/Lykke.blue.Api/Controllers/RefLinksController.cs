@@ -1,18 +1,17 @@
-﻿using Common.Log;
-using Microsoft.AspNetCore.Mvc;
-using System;
-using Swashbuckle.SwaggerGen.Annotations;
-using System.Net;
-using System.Threading.Tasks;
+﻿using Common;
+using Common.Log;
+using Lykke.blue.Api.Infrastructure;
+using Lykke.blue.Api.Infrastructure.Extensions;
 using Lykke.blue.Api.Models.RefLinksModels;
 using Lykke.blue.Service.ReferralLinks.Client.AutorestClient;
-using Lykke.blue.Api.Infrastructure.Extensions;
-using Common;
-using Microsoft.Rest;
 using Lykke.blue.Service.ReferralLinks.Client.AutorestClient.Models;
-using Lykke.blue.Service.ReferralLinks.Client;
 using Microsoft.AspNetCore.Authorization;
-using Lykke.blue.Api.Infrastructure;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Rest;
+using Swashbuckle.SwaggerGen.Annotations;
+using System;
+using System.Net;
+using System.Threading.Tasks;
 
 namespace Lykke.blue.Api.Controllers
 {
@@ -77,7 +76,7 @@ namespace Lykke.blue.Api.Controllers
             var serviceRequest = request.ConvertToServiceModel();
             serviceRequest.RecipientClientId = _requestContext.ClientId;
 
-            var result = await ExecuteRefLinksMethod((p) => _referralLinksService.ClaimInvitationLinkWithHttpMessagesAsync(p), serviceRequest, request.LogMessage);
+            var result = await ExecuteRefLinksMethod((p) => _referralLinksService.ClaimInvitationLinkWithHttpMessagesAsync(request.ReferalLinkId, serviceRequest), serviceRequest, request.LogMessage);
             return result;          
         }               
 
@@ -92,11 +91,13 @@ namespace Lykke.blue.Api.Controllers
         [ProducesResponseType(typeof(string), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> RequestGiftCoinsReferralLink([FromBody] RequestGiftCoinsLinkModel request)
         {
-            var serviceRequest = request.ConvertToServiceModel();
-            serviceRequest.SenderClientId = _requestContext.ClientId;
+            return NotFound("Reserved for version 2");
 
-            var result = await ExecuteRefLinksMethod((p) => _referralLinksService.RequestGiftCoinsReferralLinkWithHttpMessagesAsync(p), serviceRequest, request.LogMessage);
-            return result;
+            //var serviceRequest = request.ConvertToServiceModel();
+            //serviceRequest.SenderClientId = _requestContext.ClientId;
+
+            //var result = await ExecuteRefLinksMethod((p) => _referralLinksService.RequestGiftCoinsReferralLinkWithHttpMessagesAsync(p), serviceRequest, request.LogMessage);
+            //return result;
         }
         
         /// <summary>
@@ -111,11 +112,13 @@ namespace Lykke.blue.Api.Controllers
         [ProducesResponseType(typeof(string), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> ClaimGiftCoins([FromBody] ClaimRefLinkModel request)
         {
-            var serviceRequest = request.ConvertToServiceModel();
-            serviceRequest.RecipientClientId = _requestContext.ClientId;
+            return NotFound("Reserved for version 2");
 
-            var result = await ExecuteRefLinksMethod((p) => _referralLinksService.ClaimGiftCoinsWithHttpMessagesAsync(p), serviceRequest, request.LogMessage);
-            return result;            
+            //var serviceRequest = request.ConvertToServiceModel();
+            //serviceRequest.RecipientClientId = _requestContext.ClientId;
+
+            //var result = await ExecuteRefLinksMethod((p) => _referralLinksService.ClaimGiftCoinsWithHttpMessagesAsync(p), serviceRequest, request.LogMessage);
+            //return result;            
         }
 
         [HttpGet("statistics")]
@@ -137,10 +140,12 @@ namespace Lykke.blue.Api.Controllers
         [ProducesResponseType(typeof(string), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> GetChannelKey([FromQuery] string asset)
         {
-            var serviceRequest = new OffchainGetChannelKeyRequest { Asset = asset, ClientId = _requestContext.ClientId };
+            return NotFound("Reserved for version 2");
 
-            var result = await ExecuteRefLinksMethod((p) => _referralLinksService.GetChannelKeyWithHttpMessagesAsync(p), serviceRequest, "Offchain channel key requested");
-            return result;         
+            //var serviceRequest = new OffchainGetChannelKeyRequest { Asset = asset, ClientId = _requestContext.ClientId };
+
+            //var result = await ExecuteRefLinksMethod((p) => _referralLinksService.GetChannelKeyWithHttpMessagesAsync(p), serviceRequest, "Offchain channel key requested");
+            //return result;         
         }        
 
         /// <summary>
@@ -154,11 +159,13 @@ namespace Lykke.blue.Api.Controllers
         [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
         public async Task<IActionResult> TransferToLykkeWallet([FromBody] TransferToLykkeWalletModel request)
         {
-            var serviceRequest = request.ConvertToServiceModel();
-            serviceRequest.ClientId = _requestContext.ClientId;
+            return NotFound("Reserved for version 2");
 
-            var result = await ExecuteRefLinksMethod((p) => _referralLinksService.TransferToLykkeWalletMethodWithHttpMessagesAsync(p), serviceRequest, request.LogMessage);
-            return result;           
+            //var serviceRequest = request.ConvertToServiceModel();
+            //serviceRequest.ClientId = _requestContext.ClientId;
+
+            //var result = await ExecuteRefLinksMethod((p) => _referralLinksService.TransferToLykkeWalletMethodWithHttpMessagesAsync(p), serviceRequest, request.LogMessage);
+            //return result;           
         }       
 
         /// <summary>
@@ -172,11 +179,13 @@ namespace Lykke.blue.Api.Controllers
         [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
         public async Task<IActionResult> ProcessChannel([FromBody] ProcessChannelModel request)
         {
-            var serviceRequest = request.ConvertToServiceModel();
-            serviceRequest.ClientId = _requestContext.ClientId;
+            return NotFound("Reserved for version 2");
 
-            var result = await ExecuteRefLinksMethod((p) => _referralLinksService.ProcessChannelWithHttpMessagesAsync(p), serviceRequest, request.LogMessage);
-            return result;           
+            //var serviceRequest = request.ConvertToServiceModel();
+            //serviceRequest.ClientId = _requestContext.ClientId;
+
+            //var result = await ExecuteRefLinksMethod((p) => _referralLinksService.ProcessChannelWithHttpMessagesAsync(p), serviceRequest, request.LogMessage);
+            //return result;           
         }        
 
         /// <summary>
@@ -190,11 +199,13 @@ namespace Lykke.blue.Api.Controllers
         [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
         public async Task<IActionResult> Finalize([FromBody] FinalizeTransferModel request)
         {
-            var serviceRequest = request.ConvertToServiceModel();
-            serviceRequest.ClientId = _requestContext.ClientId;
+            return NotFound("Reserved for version 2");
 
-            var result = await ExecuteRefLinksMethod((p) => _referralLinksService.FinalizeRefLinkTransferWithHttpMessagesAsync(p), serviceRequest, request.LogMessage);
-            return result;         
+            //var serviceRequest = request.ConvertToServiceModel();
+            //serviceRequest.ClientId = _requestContext.ClientId;
+
+            //var result = await ExecuteRefLinksMethod((p) => _referralLinksService.FinalizeRefLinkTransferWithHttpMessagesAsync(p), serviceRequest, request.LogMessage);
+            //return result;         
         }
 
         private async Task<IActionResult> ExecuteRefLinksMethod<U, T>(Func<U, Task<HttpOperationResponse<T>>> method, U request, string logMessage)
