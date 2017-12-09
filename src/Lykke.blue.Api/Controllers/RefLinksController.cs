@@ -15,7 +15,7 @@ using System.Threading.Tasks;
 
 namespace Lykke.blue.Api.Controllers
 {
-    [Route("api/refLinks")]
+    [Route("api/referralLinks")]
     [Authorize]
     public class RefLinksController : BluApiBaseController
     {
@@ -30,6 +30,17 @@ namespace Lykke.blue.Api.Controllers
             _requestContext = requestContext;
         }
 
+        [HttpGet("{id}")]
+        [AllowAnonymous]
+        [SwaggerOperation("GetReferralLinkById")]
+        [ProducesResponseType(typeof(string), (int)HttpStatusCode.NotFound)]
+        [ProducesResponseType(typeof(string), (int)HttpStatusCode.OK)]
+        public async Task<IActionResult> GetReferralLinkById(string id)
+        {
+            var result = await ExecuteRefLinksMethod((p) => _referralLinksService.GetReferralLinkByIdWithHttpMessagesAsync(p), id, "Get Referral Link By Id");
+            return result;
+        }
+
         [HttpGet("url/{url}")]
         [AllowAnonymous]
         [SwaggerOperation("GetReferralLinkByUrl")]
@@ -42,20 +53,8 @@ namespace Lykke.blue.Api.Controllers
             var result = await ExecuteRefLinksMethod((p) => _referralLinksService.GetReferralLinkByUrlWithHttpMessagesAsync(p), decoded, "Get Referral Link By Url");
             return result;
         }
-
-        [HttpGet("id/{id}")]
-        [AllowAnonymous]
-        [SwaggerOperation("GetReferralLinkById")]
-        [ProducesResponseType(typeof(string), (int)HttpStatusCode.NotFound)]
-        [ProducesResponseType(typeof(string), (int)HttpStatusCode.OK)]
-        public async Task<IActionResult> GetReferralLinkById(string id)
-        {
-            var result = await ExecuteRefLinksMethod((p) => _referralLinksService.GetReferralLinkByIdWithHttpMessagesAsync(p), id, "Get Referral Link By Id");
-            return result;
-        }
-
-
-        [HttpGet("request/invitationLink")]
+        
+        [HttpPost("invitation")]
         [SwaggerOperation("RequestInvitationReferralLink")]
         [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
         [ProducesResponseType(typeof(string), (int)HttpStatusCode.OK)]
@@ -64,32 +63,32 @@ namespace Lykke.blue.Api.Controllers
             var result = await ExecuteRefLinksMethod((p) => _referralLinksService.RequestInvitationReferralLinkWithHttpMessagesAsync(p), new InvitationReferralLinkRequest { SenderClientId = _requestContext.ClientId }, "Invitation Link requested");
             return result;
         }
-        
-        [HttpPost("claim/invitationLink")]
+
+        [HttpPut("invitation/{refLinkId}/claim")]
         [SwaggerOperation("ClaimInvitationLink")]
         [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
         [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
         [ProducesResponseType(typeof(string), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(string), (int)HttpStatusCode.NoContent)]
-        public async Task<IActionResult> ClaimInvitationLink([FromBody] ClaimRefLinkModel request)
+        public async Task<IActionResult> ClaimInvitationLink(string refLinkId, [FromBody] ClaimRefLinkModel request)
         {
             var serviceRequest = request.ConvertToServiceModel();
             serviceRequest.RecipientClientId = _requestContext.ClientId;
 
             var result = await ExecuteRefLinksMethod((p) => _referralLinksService.ClaimInvitationLinkWithHttpMessagesAsync(request.ReferalLinkId, serviceRequest), serviceRequest, request.LogMessage);
-            return result;          
-        }               
+            return result;
+        }
 
         /// <summary>
         /// Request giftcoins referral link.
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        [HttpPost("request/giftCoinslLink")]
-        [SwaggerOperation("RequestGiftCoinsReferralLink")]
-        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
-        [ProducesResponseType(typeof(string), (int)HttpStatusCode.OK)]
-        public async Task<IActionResult> RequestGiftCoinsReferralLink([FromBody] RequestGiftCoinsLinkModel request)
+        //[HttpPost("giftCoinLinks")] - for v2
+        //[SwaggerOperation("RequestGiftCoinsReferralLink")]
+        //[ProducesResponseType((int)HttpStatusCode.BadRequest)]
+        //[ProducesResponseType(typeof(string), (int)HttpStatusCode.OK)]
+        private async Task<IActionResult> RequestGiftCoinsReferralLink([FromBody] RequestGiftCoinsLinkModel request)
         {
             return NotFound("Reserved for version 2");
 
@@ -99,18 +98,18 @@ namespace Lykke.blue.Api.Controllers
             //var result = await ExecuteRefLinksMethod((p) => _referralLinksService.RequestGiftCoinsReferralLinkWithHttpMessagesAsync(p), serviceRequest, request.LogMessage);
             //return result;
         }
-        
+
         /// <summary>
         /// Claim giftcoins referral link.
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        [HttpPost("claim/giftCoins")]
-        [SwaggerOperation("ClaimGiftCoins")]
-        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
-        [ProducesResponseType((int)HttpStatusCode.NotFound)]
-        [ProducesResponseType(typeof(string), (int)HttpStatusCode.OK)]
-        public async Task<IActionResult> ClaimGiftCoins([FromBody] ClaimRefLinkModel request)
+        //[HttpPost("claim/giftCoins")] - for v2
+        //[SwaggerOperation("ClaimGiftCoins")]
+        //[ProducesResponseType((int)HttpStatusCode.BadRequest)]
+        //[ProducesResponseType((int)HttpStatusCode.NotFound)]
+        //[ProducesResponseType(typeof(string), (int)HttpStatusCode.OK)]
+        private async Task<IActionResult> ClaimGiftCoins([FromBody] ClaimRefLinkModel request)
         {
             return NotFound("Reserved for version 2");
 
@@ -135,10 +134,10 @@ namespace Lykke.blue.Api.Controllers
         /// Get offchain ChannelKey for transfer.  
         /// </summary>
         /// <returns></returns>
-        [HttpGet("offchain/channelKey")]
-        [SwaggerOperation("GetChannelKey")]
-        [ProducesResponseType(typeof(string), (int)HttpStatusCode.OK)]
-        public async Task<IActionResult> GetChannelKey([FromQuery] string asset)
+        //[HttpPost("channelKey")] --reserved for version 2
+        //[SwaggerOperation("GetChannelKey")]
+        //[ProducesResponseType(typeof(string), (int)HttpStatusCode.OK)]
+        private async Task<IActionResult> GetChannelKey([FromQuery] string asset)
         {
             return NotFound("Reserved for version 2");
 
@@ -146,18 +145,18 @@ namespace Lykke.blue.Api.Controllers
 
             //var result = await ExecuteRefLinksMethod((p) => _referralLinksService.GetChannelKeyWithHttpMessagesAsync(p), serviceRequest, "Offchain channel key requested");
             //return result;         
-        }        
+        }
 
         /// <summary>
         /// Create offchain transfer to Lykke wallet
         /// </summary>
         /// <returns></returns>
-        [HttpPost("offchain/transferToLykkeWallet")]
-        [SwaggerOperation("TransferToLykkeWallet")]
-        [ProducesResponseType(typeof(string), (int)HttpStatusCode.OK)]
-        [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
-        [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
-        public async Task<IActionResult> TransferToLykkeWallet([FromBody] TransferToLykkeWalletModel request)
+        //[HttpPost("transferToLykkeWallet")] --reserved for version 2
+        //[SwaggerOperation("TransferToLykkeWallet")]
+        //[ProducesResponseType(typeof(string), (int)HttpStatusCode.OK)]
+        //[ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+        //[ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
+        private async Task<IActionResult> TransferToLykkeWallet([FromBody] TransferToLykkeWalletModel request)
         {
             return NotFound("Reserved for version 2");
 
@@ -166,18 +165,18 @@ namespace Lykke.blue.Api.Controllers
 
             //var result = await ExecuteRefLinksMethod((p) => _referralLinksService.TransferToLykkeWalletMethodWithHttpMessagesAsync(p), serviceRequest, request.LogMessage);
             //return result;           
-        }       
+        }
 
         /// <summary>
         /// Process offchain channel
         /// </summary>
         /// <returns></returns>
-        [HttpPost("offchain/processChannel")]
-        [SwaggerOperation("ProcessChannel")]
-        [ProducesResponseType(typeof(string), (int)HttpStatusCode.OK)]
-        [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
-        [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
-        public async Task<IActionResult> ProcessChannel([FromBody] ProcessChannelModel request)
+        //[HttpPost("processChannel")] --reserved for version 2
+        //[SwaggerOperation("ProcessChannel")]
+        //[ProducesResponseType(typeof(string), (int)HttpStatusCode.OK)]
+        //[ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+        //[ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
+        private async Task<IActionResult> ProcessChannel([FromBody] ProcessChannelModel request)
         {
             return NotFound("Reserved for version 2");
 
@@ -186,18 +185,18 @@ namespace Lykke.blue.Api.Controllers
 
             //var result = await ExecuteRefLinksMethod((p) => _referralLinksService.ProcessChannelWithHttpMessagesAsync(p), serviceRequest, request.LogMessage);
             //return result;           
-        }        
+        }
 
         /// <summary>
         /// Process offchain channel
         /// </summary>
         /// <returns></returns>
-        [HttpPost("offchain/finalize")]
-        [SwaggerOperation("FinalizeRefLinkTransfer")]
-        [ProducesResponseType(typeof(string), (int)HttpStatusCode.OK)]
-        [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
-        [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
-        public async Task<IActionResult> Finalize([FromBody] FinalizeTransferModel request)
+        //[HttpPost("finalizeRefLinkTransfer")] --reserved for version 2
+        //[SwaggerOperation("FinalizeRefLinkTransfer")]
+        //[ProducesResponseType(typeof(string), (int)HttpStatusCode.OK)]
+        //[ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+        //[ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
+        private async Task<IActionResult> Finalize([FromBody] FinalizeTransferModel request)
         {
             return NotFound("Reserved for version 2");
 
