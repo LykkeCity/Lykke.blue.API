@@ -17,12 +17,12 @@ namespace Lykke.blue.Api.Controllers
 {
     [Route("api/referralLinks")]
     [Authorize]
-    public class RefLinksController : BluApiBaseController
+    public class ReferralLinksController : BluApiBaseController
     {
         private readonly ILykkeReferralLinksService _referralLinksService;
         private readonly IRequestContext _requestContext;
 
-        public RefLinksController(ILog log, 
+        public ReferralLinksController(ILog log, 
             ILykkeReferralLinksService refSrv,
             IRequestContext requestContext) : base (log)
         {
@@ -89,7 +89,7 @@ namespace Lykke.blue.Api.Controllers
             return result;
         }
         
-        private async Task<IActionResult> ExecuteRefLinksMethod<U, T>(Func<U, Task<HttpOperationResponse<T>>> method, U request, string logMessage)
+        private async Task<IActionResult> ExecuteRefLinksMethod<TU, T>(Func<TU, Task<HttpOperationResponse<T>>> method, TU request, string logMessage)
         {
             var response = await method(request);
 
