@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using Common.Log;
-using Lykke.blue.Api.Core.Filters;
 using Lykke.blue.Api.Infrastructure;
 using Lykke.blue.Api.Infrastructure.Extensions;
 using Lykke.Service.Pledges.Client;
@@ -19,7 +18,6 @@ namespace Lykke.blue.Api.Controllers
 {
     [Authorize]
     [Route("api/pledges")]
-    [ServiceFilter(typeof(DisableOnMaintenanceFilter))]
     public class PledgesController : Controller
     {
         private readonly IRequestContext _requestContext;
