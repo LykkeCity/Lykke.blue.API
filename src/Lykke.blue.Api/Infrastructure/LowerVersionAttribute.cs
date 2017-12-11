@@ -1,10 +1,10 @@
-﻿using System.Linq;
-using System.Net;
-using Common;
+﻿using Common;
 using Lykke.blue.Api.Infrastructure.Extensions;
 using Lykke.blue.Api.Strings;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using System.Linq;
+using System.Net;
 
 namespace Lykke.blue.Api.Infrastructure
 {
@@ -15,10 +15,7 @@ namespace Lykke.blue.Api.Infrastructure
         private string _device;
         public string Devices
         {
-            get
-            {
-                return _device;
-            }
+            get => _device;
             set
             {
                 _device = value;

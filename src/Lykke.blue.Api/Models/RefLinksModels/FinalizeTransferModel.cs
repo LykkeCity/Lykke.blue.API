@@ -1,11 +1,10 @@
 ﻿using Lykke.blue.Service.ReferralLinks.Client.AutorestClient.Models;
-using System;
-using System.Collections.Generic;
 using System.Runtime.Serialization;
-using System.Text;
 
 namespace Lykke.blue.Api.Models.RefLinksModels
 {
+    // ReSharper disable once UnusedMember.Global
+    // reserver for v2
     public class FinalizeTransferModel : RefLinksBaseRequestModel<OffchainFinalizeModel>
     {
         public string TransferId { get; set; }
@@ -15,17 +14,17 @@ namespace Lykke.blue.Api.Models.RefLinksModels
         public string RefLinkId { get; set; }
 
         [IgnoreDataMember]
-        public override string LogMessage { get => "Finalize offchain transfer"; }
+        public override string LogMessage => "Finalize offchain transfer";
 
         public override OffchainFinalizeModel ConvertToServiceModel()
         {
             return new OffchainFinalizeModel
             {
-                TransferId = this.TransferId,
-                ClientRevokePubKey = this.ClientRevokePubKey,
-                ClientRevokeEncryptedPrivateKey = this.ClientRevokeEncryptedPrivateKey,
-                SignedTransferTransaction = this.SignedTransferTransaction,
-                RefLinkId = this.RefLinkId
+                TransferId = TransferId,
+                ClientRevokePubKey = ClientRevokePubKey,
+                ClientRevokeEncryptedPrivateKey = ClientRevokeEncryptedPrivateKey,
+                SignedTransferTransaction = SignedTransferTransaction,
+                RefLinkId = RefLinkId
             };
         }
     }

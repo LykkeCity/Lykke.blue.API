@@ -8,6 +8,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="LykkeSettings\AppGlobalSettingsEntity.cs" />
+    <Compile Remove="LykkeSettings\AppGlobalSettingsRepository.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="6.2.2" />
     <PackageReference Include="Lykke.AzureStorage" Version="2.1.4" />
   </ItemGroup>
 

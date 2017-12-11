@@ -9,14 +9,14 @@ namespace Lykke.blue.Api.Models.RefLinksModels
         public bool IsNewClient { get; set; }
 
         [IgnoreDataMember]
-        public override string LogMessage { get => "Invitation link claimed"; }
+        public override string LogMessage => "Invitation link claimed";
 
         public override ClaimReferralLinkRequest ConvertToServiceModel()
         {
             return new ClaimReferralLinkRequest
             {
-                IsNewClient = this.IsNewClient,
-                ReferalLinkUrl = this.ReferalLinkUrl
+                IsNewClient = IsNewClient,
+                ReferalLinkUrl = ReferalLinkUrl
             };
         }
     }

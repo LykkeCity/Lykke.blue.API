@@ -9,7 +9,7 @@ namespace Lykke.blue.Api.Services.Identity
     {
         public class PrincipalCashItem
         {
-            public ClaimsPrincipal ClaimsPrincipal { get; set; }
+            public ClaimsPrincipal ClaimsPrincipal { get; private set; }
             public DateTime LastRefresh { get; private set; }
 
             public static PrincipalCashItem Create(ClaimsPrincipal src)
@@ -62,14 +62,6 @@ namespace Lykke.blue.Api.Services.Identity
             finally
             {
                 _cacheLock.ExitUpgradeableReadLock();
-            }
-        }
-
-        public void Invalidate(string token)
-        {
-            lock (_claimsCache)
-            {
-                _claimsCache.Remove(token);
             }
         }
 

@@ -1,8 +1,8 @@
-﻿using System.Collections.Generic;
-using Lykke.blue.Api.Core.Domain.Health;
+﻿using Lykke.blue.Api.Core.Domain.Health;
 using Lykke.blue.Api.Core.Services;
+using System.Collections.Generic;
 
-namespace Lykke.blue.Api.blues
+namespace Lykke.blue.Api.Services
 {
     // NOTE: See https://lykkex.atlassian.net/wiki/spaces/LKEWALLET/pages/35755585/Add+your+app+to+Monitoring
     public class HealthService : IHealthService

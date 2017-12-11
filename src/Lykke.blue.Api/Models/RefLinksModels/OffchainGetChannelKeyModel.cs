@@ -1,21 +1,20 @@
 ﻿using Lykke.blue.Service.ReferralLinks.Client.AutorestClient.Models;
-using System;
-using System.Collections.Generic;
 using System.Runtime.Serialization;
-using System.Text;
 
 namespace Lykke.blue.Api.Models.RefLinksModels
 {
+    // ReSharper disable once UnusedMember.Global
+    //reserver for v2
     public class OffchainGetChannelKeyModel : RefLinksBaseRequestModel<OffchainGetChannelKeyRequest>
     {
         public string Asset { get; set; }
 
         [IgnoreDataMember]
-        public override string LogMessage { get => "Offchain channel key requested"; }
+        public override string LogMessage => "Offchain channel key requested";
 
         public override OffchainGetChannelKeyRequest ConvertToServiceModel()
         {
-            return new OffchainGetChannelKeyRequest { Asset = this.Asset};
+            return new OffchainGetChannelKeyRequest { Asset = Asset};
         }
     }
 }
