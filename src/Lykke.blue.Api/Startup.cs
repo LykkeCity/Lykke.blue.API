@@ -1,15 +1,15 @@
-﻿using System;
-using System.Threading.Tasks;
-using Autofac;
+﻿using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using AutoMapper;
 using AzureStorage.Tables;
 using Common.Log;
 using FluentValidation.AspNetCore;
+using Lykke.blue.Api.Core.Filters;
 using Lykke.blue.Api.Core.Services;
 using Lykke.blue.Api.Core.Settings;
 using Lykke.blue.Api.Infrastructure;
 using Lykke.blue.Api.Infrastructure.Authentication;
+using Lykke.blue.Api.Models.ValidationModels;
 using Lykke.blue.Api.Modules;
 using Lykke.Common.ApiLibrary.Middleware;
 using Lykke.Common.ApiLibrary.Swagger;
@@ -22,7 +22,8 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http.Internal;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Lykke.blue.Api.Models.ValidationModels;
+using System;
+using System.Threading.Tasks;
 
 namespace Lykke.blue.Api
 {
@@ -54,6 +55,7 @@ namespace Lykke.blue.Api
         {
             try
             {
+                services.AddScoped<DisableOnMaintenanceFilter>();
 
                 services.AddMvc(options =>
                      {

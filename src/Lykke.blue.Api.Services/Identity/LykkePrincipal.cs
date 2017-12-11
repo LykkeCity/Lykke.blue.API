@@ -1,10 +1,10 @@
-﻿using System;
-using System.Security.Claims;
-using System.Threading.Tasks;
-using Lykke.blue.Api.Core.Constants;
+﻿using Lykke.blue.Api.Core.Constants;
 using Lykke.blue.Api.Core.Identity;
 using Lykke.Service.Session;
 using Microsoft.AspNetCore.Http;
+using System;
+using System.Security.Claims;
+using System.Threading.Tasks;
 
 namespace Lykke.blue.Api.Services.Identity
 {
@@ -41,10 +41,6 @@ namespace Lykke.blue.Api.Services.Identity
             return values[1];
         }
 
-        public void InvalidateCache(string token)
-        {
-            _claimsCache.Invalidate(token);
-        }
 
         public async Task<ClaimsPrincipal> GetCurrent()
         {

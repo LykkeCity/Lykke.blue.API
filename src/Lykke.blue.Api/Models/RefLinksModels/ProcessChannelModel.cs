@@ -1,22 +1,21 @@
 ﻿using Lykke.blue.Service.ReferralLinks.Client.AutorestClient.Models;
-using System;
-using System.Collections.Generic;
 using System.Runtime.Serialization;
-using System.Text;
 
 namespace Lykke.blue.Api.Models.RefLinksModels
 {
+    // ReSharper disable once UnusedMember.Global
+    //reserver for v2
     public class ProcessChannelModel : RefLinksBaseRequestModel<OffchainChannelProcessModel>
     {
         public string TransferId { get; set; }
         public string SignedChannelTransaction { get; set; }
 
         [IgnoreDataMember]
-        public override string LogMessage { get => "Offchain process channel"; }
+        public override string LogMessage => "Offchain process channel";
 
         public override OffchainChannelProcessModel ConvertToServiceModel()
         {
-            return new OffchainChannelProcessModel { SignedChannelTransaction = this.SignedChannelTransaction, TransferId = this.TransferId };
+            return new OffchainChannelProcessModel { SignedChannelTransaction = SignedChannelTransaction, TransferId = TransferId };
         }
     }
 }

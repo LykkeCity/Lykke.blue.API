@@ -1,38 +1,35 @@
-﻿using System;
-using System.Net;
-using System.Threading.Tasks;
-using AutoMapper;
+﻿using AutoMapper;
 using Common.Log;
+using Lykke.blue.Api.Core.Filters;
 using Lykke.blue.Api.Infrastructure;
-using ApiRequests = Lykke.blue.Api.Requests;
-using ApiResponses = Lykke.blue.Api.Responses;
-using ClientModel = Lykke.Service.Pledges.Client.AutorestClient.Models;
+using Lykke.blue.Api.Infrastructure.Extensions;
 using Lykke.Service.Pledges.Client;
 using Lykke.Service.Pledges.Client.AutorestClient;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Rest;
 using Swashbuckle.SwaggerGen.Annotations;
-using Lykke.blue.Api.Infrastructure.Extensions;
+using System;
+using System.Net;
+using System.Threading.Tasks;
+using ApiRequests = Lykke.blue.Api.Requests;
+using ApiResponses = Lykke.blue.Api.Responses;
+using ClientModel = Lykke.Service.Pledges.Client.AutorestClient.Models;
 
 namespace Lykke.blue.Api.Controllers
 {
     [Authorize]
     [Route("api/pledges")]
+    [ServiceFilter(typeof(DisableOnMaintenanceFilter))]
     public class PledgesController : Controller
     {
         private readonly IRequestContext _requestContext;
-        private readonly IPledgesClient _pledgesClient;
         private readonly IPledgesAPI _pledgesApi;
-        private readonly ILog _log;
 
         public PledgesController(ILog log, 
             IPledgesClient pledgesClient, 
             IRequestContext requestContext,
             IPledgesAPI pledgesApi)
         {
-            _log = log ?? throw new ArgumentException(nameof(log));
-            _pledgesClient = pledgesClient ?? throw new ArgumentException(nameof(pledgesClient));
             _requestContext = requestContext ?? throw new ArgumentNullException(nameof(requestContext));
             _pledgesApi = pledgesApi ?? throw new ArgumentNullException(nameof(pledgesApi));
         }
@@ -68,7 +65,6 @@ namespace Lykke.blue.Api.Controllers
         /// <summary>
         /// Get pledge.
         /// </summary>
-        /// <param name="clientId">Id of the pledge we wanna find.</param>
         /// <returns>Found pledge.</returns>
         [HttpGet]
         [SwaggerOperation("GetPledge")]
@@ -94,7 +90,6 @@ namespace Lykke.blue.Api.Controllers
         /// <summary>
         /// Update pledge details.
         /// </summary>
-        /// <param name="id">Id of the pledge we wanna update.</param>
         /// <param name="request">Pledge values we wanna change.</param>
         /// <returns>Updated pledge.</returns>
         [HttpPut]
@@ -123,7 +118,6 @@ namespace Lykke.blue.Api.Controllers
         /// <summary>
         /// Delete pledge.
         /// </summary>
-        /// <param name="clientId">Id of the pledge we wanna delete.</param>
         [HttpDelete]
         [SwaggerOperation("DeletePledge")]
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]

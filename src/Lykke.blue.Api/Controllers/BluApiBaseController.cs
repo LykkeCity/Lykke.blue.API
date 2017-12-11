@@ -2,7 +2,6 @@
 using Common.Log;
 using Lykke.blue.Api.Infrastructure.Extensions;
 using Microsoft.AspNetCore.Mvc;
-using System;
 using System.Threading.Tasks;
 
 namespace Lykke.blue.Api.Controllers
@@ -18,7 +17,7 @@ namespace Lykke.blue.Api.Controllers
 
         protected async Task LogInfo<T>(T callParams, ControllerContext controllerCtx, string info)
         {
-            await _log.WriteInfoAsync(controllerCtx.GetExecutongControllerAndAction(), (new { callParams }).ToJson(), info, DateTime.Now);
+            await _log.WriteInfoAsync(controllerCtx.GetExecutongControllerAndAction(), (new { callParams }).ToJson(), info);
         }
     }
 }

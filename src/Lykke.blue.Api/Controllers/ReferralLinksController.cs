@@ -1,5 +1,6 @@
 ﻿using Common;
 using Common.Log;
+using Lykke.blue.Api.Core.Filters;
 using Lykke.blue.Api.Infrastructure;
 using Lykke.blue.Api.Infrastructure.Extensions;
 using Lykke.blue.Api.Models.RefLinksModels;
@@ -17,6 +18,7 @@ namespace Lykke.blue.Api.Controllers
 {
     [Route("api/referralLinks")]
     [Authorize]
+    [ServiceFilter(typeof(DisableOnMaintenanceFilter))]
     public class ReferralLinksController : BluApiBaseController
     {
         private readonly ILykkeReferralLinksService _referralLinksService;

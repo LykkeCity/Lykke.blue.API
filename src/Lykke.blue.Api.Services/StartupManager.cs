@@ -1,8 +1,8 @@
-﻿using System.Threading.Tasks;
-using Common.Log;
+﻿using Common.Log;
 using Lykke.blue.Api.Core.Services;
+using System.Threading.Tasks;
 
-namespace Lykke.blue.Api.blues
+namespace Lykke.blue.Api.Services
 {
     // NOTE: Sometimes, startup process which is expressed explicitly is not just better, 
     // but the only way. If this is your case, use this class to manage startup.

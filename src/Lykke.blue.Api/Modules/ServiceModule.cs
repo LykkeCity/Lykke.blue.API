@@ -1,13 +1,18 @@
-﻿using System;
-using Autofac;
+﻿using Autofac;
 using Autofac.Extensions.DependencyInjection;
+using AzureStorage.Tables;
+using Common.Cache;
 using Common.Log;
-using Lykke.blue.Api.blues;
+using Lykke.blue.Api.AzureRepositories.LykkeSettings;
 using Lykke.blue.Api.Core.Identity;
 using Lykke.blue.Api.Core.Services;
+using Lykke.blue.Api.Core.Settings.LykkeSettings;
 using Lykke.blue.Api.Core.Settings.ServiceSettings;
 using Lykke.blue.Api.Infrastructure;
+using Lykke.blue.Api.Services;
 using Lykke.blue.Api.Services.Identity;
+using Lykke.blue.Service.InspireStream.Client;
+using Lykke.blue.Service.ReferralLinks.Client.AutorestClient;
 using Lykke.Service.ClientAccount.Client;
 using Lykke.Service.ClientAccount.Client.AutorestClient;
 using Lykke.Service.Pledges.Client;
@@ -16,8 +21,7 @@ using Lykke.Service.Registration;
 using Lykke.Service.Session;
 using Lykke.SettingsReader;
 using Microsoft.Extensions.DependencyInjection;
-using Lykke.blue.Service.InspireStream.Client;
-using Lykke.blue.Service.ReferralLinks.Client.AutorestClient;
+using System;
 
 namespace Lykke.blue.Api.Modules
 {
@@ -45,7 +49,16 @@ namespace Lykke.blue.Api.Modules
             builder.RegisterType<LykkePrincipal>().As<ILykkePrincipal>().InstancePerLifetimeScope();
             builder.RegisterInstance(_settings.CurrentValue.BlueApiSettings);
 
+            BindLykkeGlobalSettingsRepo(builder);
+
             builder.Populate(_services);
+        }
+
+        private void BindLykkeGlobalSettingsRepo(ContainerBuilder builder)
+        {
+            builder.RegisterInstance<ILykkeGlobalSettingsRepositry>(
+                new LykkeGlobalSettingsRepository(
+                    AzureTableStorage<LykkeGlobalSettingsEntity>.Create(_settings.ConnectionString(x => x.Db.LykkeGlobalSettingsConnString), "Setup", _log)));
         }
 
         private void RegisterExternalServices(ContainerBuilder builder)
@@ -53,12 +66,6 @@ namespace Lykke.blue.Api.Modules
             builder.RegisterType<ClientAccountService>()
                 .As<IClientAccountService>()
                 .WithParameter("baseUri", new Uri(_settings.CurrentValue.Services.ClientAccountServiceUrl));
-
-            //builder.RegisterType<ClientAccountClient>()
-            //    .As<IClientAccountClient>()
-            //    .WithParameter("serviceUrl", _settings.CurrentValue.Services.ClientAccountServiceUrl)
-            //    .WithParameter("log", _log)
-            //    .SingleInstance();
 
             builder.RegisterType<LykkeRegistrationClient>()
                 .As<ILykkeRegistrationClient>()
@@ -124,6 +131,8 @@ namespace Lykke.blue.Api.Modules
         {
             builder.RegisterInstance(_log).As<ILog>().SingleInstance();
             builder.RegisterInstance(_settings.CurrentValue).SingleInstance();
+            builder.RegisterInstance<ICacheManager>(new MemoryCacheManager());
+
         }
     }
 }

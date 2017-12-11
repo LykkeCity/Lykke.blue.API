@@ -1,9 +1,10 @@
 ﻿using AutoMapper;
-using ApiRequests = Lykke.blue.Api.Requests;
-using ApiResponses = Lykke.blue.Api.Responses;
-using ClientModel = Lykke.Service.Pledges.Client.AutorestClient.Models;
+using Lykke.blue.Api.AzureRepositories.LykkeSettings;
+using Lykke.blue.Api.Core.Settings.LykkeSettings;
 using Lykke.blue.Api.Responses;
 using Lykke.Service.Registration.Models;
+using ApiRequests = Lykke.blue.Api.Requests;
+using ClientModel = Lykke.Service.Pledges.Client.AutorestClient.Models;
 
 namespace Lykke.blue.Api
 {
@@ -21,10 +22,11 @@ namespace Lykke.blue.Api
             CreateMap<ApiRequests.CreatePledgeRequest, ClientModel.CreatePledgeRequest>()
                 .ForMember(dest => dest.ClientId, opt => opt.Ignore());
 
-            CreateMap<ClientModel.CreatePledgeResponse, ApiResponses.CreatePledgeResponse>();
-            CreateMap<ClientModel.GetPledgeResponse, ApiResponses.GetPledgeResponse>();
+            CreateMap<ClientModel.CreatePledgeResponse, CreatePledgeResponse>();
+            CreateMap<ClientModel.GetPledgeResponse, GetPledgeResponse>();
             CreateMap<ApiRequests.UpdatePledgeRequest, ClientModel.UpdatePledgeRequest>();
-            CreateMap<ClientModel.UpdatePledgeResponse, ApiResponses.UpdatePledgeResponse>();
+            CreateMap<ClientModel.UpdatePledgeResponse, UpdatePledgeResponse>();
+            CreateMap<LykkeGlobalSettingsEntity, LykkeGlobalSettings>();
         }
     }
 }

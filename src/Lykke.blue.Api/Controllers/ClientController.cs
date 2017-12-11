@@ -7,14 +7,11 @@ using Lykke.blue.Api.Requests;
 using Lykke.blue.Api.Responses;
 using Lykke.blue.Api.Strings;
 using Lykke.Service.ClientAccount.Client;
-using Lykke.Service.ClientAccount.Client.Models;
 using Lykke.Service.Registration;
 using Lykke.Service.Registration.Models;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.SwaggerGen.Annotations;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 
@@ -25,7 +22,6 @@ namespace Lykke.blue.Api.Controllers
     [Route("api/client")]
     public class ClientController : Controller
     {
-        private readonly ILog _log;
         private readonly ILykkeRegistrationClient _lykkeRegistrationClient;
         private readonly IPartnersClient _partnersClient;
         private readonly IRequestContext _requestContext;
@@ -38,7 +34,6 @@ namespace Lykke.blue.Api.Controllers
             IRequestContext requestContext,
             BlueApiSettings blueApiSettings)
         {
-            _log = log ?? throw new ArgumentNullException(nameof(log));
             _lykkeRegistrationClient = lykkeRegistrationClient ?? throw new ArgumentNullException(nameof(lykkeRegistrationClient));
             _partnersClient = partnersClient;
             _requestContext = requestContext ?? throw new ArgumentNullException(nameof(requestContext));
