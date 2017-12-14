@@ -80,7 +80,7 @@ namespace Lykke.blue.Api.Controllers
         {
             string partnerId = _blueApiSettings.DefaultBlueLifePartnerId;
 
-            int? count = await _partnersClient.GetUsersCountByPartnerId(partnerId);
+            int? count = await _partnersClient.GetUsersCountByPartnerIdAsync(partnerId);
 
             if (!count.HasValue)
                 return NotFound(Phrases.UsersByPartnerIdNotFound);
