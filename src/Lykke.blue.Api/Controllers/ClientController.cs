@@ -79,13 +79,22 @@ namespace Lykke.blue.Api.Controllers
         public async Task<IActionResult> GetRegisteredUsersCount()
         {
             string partnerId = _blueApiSettings.DefaultBlueLifePartnerId;
+            try
+            {
 
-            int? count = await _partnersClient.GetUsersCountByPartnerId(partnerId);
+                int? count = await _partnersClient.GetUsersCountByPartnerIdAsync(partnerId);
 
-            if (!count.HasValue)
-                return NotFound(Phrases.UsersByPartnerIdNotFound);
+                if (!count.HasValue)
+                    return NotFound(Phrases.UsersByPartnerIdNotFound);
 
-            return Ok(UsersCountResponseModel.Create(count.Value));
+                return Ok(UsersCountResponseModel.Create(count.Value));
+            }
+            catch (Exception ex)
+            {
+                //fake community count
+                await _log.WriteInfoAsync(nameof(ClientController), nameof(GetRegisteredUsersCount), partnerId , ex.ToString(), DateTime.Now);
+                return Ok(UsersCountResponseModel.Create(135));
+            }
         }
     }
 }
