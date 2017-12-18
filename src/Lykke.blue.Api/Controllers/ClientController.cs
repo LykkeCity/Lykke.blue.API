@@ -22,6 +22,7 @@ namespace Lykke.blue.Api.Controllers
     [Route("api/client")]
     public class ClientController : Controller
     {
+        private readonly ILog _log;
         private readonly ILykkeRegistrationClient _lykkeRegistrationClient;
         private readonly IPartnersClient _partnersClient;
         private readonly IRequestContext _requestContext;
@@ -34,6 +35,7 @@ namespace Lykke.blue.Api.Controllers
             IRequestContext requestContext,
             BlueApiSettings blueApiSettings)
         {
+            _log = log ?? throw new ArgumentNullException(nameof(log));
             _lykkeRegistrationClient = lykkeRegistrationClient ?? throw new ArgumentNullException(nameof(lykkeRegistrationClient));
             _partnersClient = partnersClient;
             _requestContext = requestContext ?? throw new ArgumentNullException(nameof(requestContext));
