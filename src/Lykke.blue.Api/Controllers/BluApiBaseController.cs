@@ -17,7 +17,12 @@ namespace Lykke.blue.Api.Controllers
 
         protected async Task LogInfo<T>(T callParams, ControllerContext controllerCtx, string info)
         {
-            await _log.WriteInfoAsync(controllerCtx.GetExecutongControllerAndAction(), (new { callParams }).ToJson(), info);
+            await _log.WriteInfoAsync(controllerCtx.GetExecutongControllerAndAction(), new { callParams }.ToJson(), info);
+        }
+
+        protected async Task LogError<T>(T callParams, ControllerContext controllerCtx, string error)
+        {
+            await _log.WriteInfoAsync(controllerCtx.GetExecutongControllerAndAction(), new { callParams }.ToJson(), error);
         }
     }
 }
