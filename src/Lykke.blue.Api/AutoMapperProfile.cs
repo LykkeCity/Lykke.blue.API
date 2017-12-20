@@ -30,7 +30,6 @@ namespace Lykke.blue.Api
             CreateMap<ClientModel.UpdatePledgeResponse, UpdatePledgeResponse>();
             CreateMap<LykkeGlobalSettingsEntity, LykkeGlobalSettings>();
             CreateMap<OffchainTradeRespModel, RefLinksTransferOffchainResponse>();
-            CreateMap<OffchainSuccessTradeRespModel, RefLinksTransferOffchainResponse>();
         }
     }
 }
