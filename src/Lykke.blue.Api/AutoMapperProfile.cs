@@ -2,8 +2,6 @@
 using Lykke.blue.Api.AzureRepositories.LykkeSettings;
 using Lykke.blue.Api.Core.Settings.LykkeSettings;
 using Lykke.blue.Api.Responses;
-using Lykke.blue.Api.Responses.ReferralLinks.Offchain;
-using Lykke.blue.Service.ReferralLinks.Client.AutorestClient.Models;
 using Lykke.Service.Registration.Models;
 using ApiRequests = Lykke.blue.Api.Requests;
 using ClientModel = Lykke.Service.Pledges.Client.AutorestClient.Models;
@@ -29,7 +27,6 @@ namespace Lykke.blue.Api
             CreateMap<ApiRequests.UpdatePledgeRequest, ClientModel.UpdatePledgeRequest>();
             CreateMap<ClientModel.UpdatePledgeResponse, UpdatePledgeResponse>();
             CreateMap<LykkeGlobalSettingsEntity, LykkeGlobalSettings>();
-            CreateMap<OffchainTradeRespModel, RefLinksTransferOffchainResponse>();
         }
     }
 }

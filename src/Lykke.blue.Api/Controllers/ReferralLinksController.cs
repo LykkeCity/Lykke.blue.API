@@ -1,11 +1,9 @@
-﻿using AutoMapper;
-using Common;
+﻿using Common;
 using Common.Log;
 using Lykke.blue.Api.Core.Filters;
 using Lykke.blue.Api.Infrastructure;
 using Lykke.blue.Api.Infrastructure.Extensions;
 using Lykke.blue.Api.Models.RefLinksModels;
-using Lykke.blue.Api.Responses.ReferralLinks.Offchain;
 using Lykke.blue.Service.ReferralLinks.Client.AutorestClient;
 using Lykke.blue.Service.ReferralLinks.Client.AutorestClient.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -23,11 +21,11 @@ namespace Lykke.blue.Api.Controllers
     [ServiceFilter(typeof(DisableOnMaintenanceFilter))]
     public class ReferralLinksController : BluApiBaseController
     {
-        private readonly ILykkeReferralLinksService _referralLinksService;
+        private readonly ILykkeBlueServiceReferralLinks _referralLinksService;
         private readonly IRequestContext _requestContext;
 
         public ReferralLinksController(ILog log, 
-            ILykkeReferralLinksService refSrv,
+            ILykkeBlueServiceReferralLinks refSrv,
             IRequestContext requestContext) : base (log)
         {
             _referralLinksService = refSrv;
@@ -46,7 +44,7 @@ namespace Lykke.blue.Api.Controllers
         [ProducesResponseType(typeof(string), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> GetReferralLinkById(string id)
         {
-            var result = await ExecuteRefLinksMethod((p) => _referralLinksService.GetReferralLinkByIdWithHttpMessagesAsync(p), id, "Get Referral Link By Id");
+            var result = await ExecuteRefLinksMethod(p => _referralLinksService.GetReferralLinkByIdWithHttpMessagesAsync(p), id, "Get Referral Link By Id");
             return result;
         }
 
@@ -64,7 +62,7 @@ namespace Lykke.blue.Api.Controllers
         {
             var decoded = WebUtility.UrlDecode(url);
 
-            var result = await ExecuteRefLinksMethod((p) => _referralLinksService.GetReferralLinkByUrlWithHttpMessagesAsync(p), decoded, "Get Referral Link By Url");
+            var result = await ExecuteRefLinksMethod(p => _referralLinksService.GetReferralLinkByUrlWithHttpMessagesAsync(p), decoded, "Get Referral Link By Url");
             return result;
         }
 
@@ -78,7 +76,7 @@ namespace Lykke.blue.Api.Controllers
         [ProducesResponseType(typeof(string), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> RequestInvitationReferralLink()
         {
-            var result = await ExecuteRefLinksMethod((p) => _referralLinksService.RequestInvitationReferralLinkWithHttpMessagesAsync(p), new InvitationReferralLinkRequest { SenderClientId = _requestContext.ClientId }, "Invitation Link requested");
+            var result = await ExecuteRefLinksMethod(p => _referralLinksService.RequestInvitationReferralLinkWithHttpMessagesAsync(p), new InvitationReferralLinkRequest { SenderClientId = _requestContext.ClientId }, "Invitation Link requested");
             return result;
         }
 
@@ -93,7 +91,7 @@ namespace Lykke.blue.Api.Controllers
             var serviceRequest = request.ConvertToServiceModel();
             serviceRequest.RecipientClientId = _requestContext.ClientId;
 
-            var result = await ExecuteRefLinksMethod((p) => _referralLinksService.ClaimInvitationLinkWithHttpMessagesAsync(refLinkId, serviceRequest), serviceRequest, request.LogMessage);
+            var result = await ExecuteRefLinksMethod(p => _referralLinksService.ClaimInvitationLinkWithHttpMessagesAsync(refLinkId, serviceRequest), serviceRequest, request.LogMessage);
             return result;
         }
 
@@ -107,7 +105,21 @@ namespace Lykke.blue.Api.Controllers
         [ProducesResponseType(typeof(GetReferralLinksStatisticsBySenderIdResponse), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> GetReferralLinksStatisticsBySenderId()
         {
-            var result = await ExecuteRefLinksMethod((p) => _referralLinksService.GetReferralLinksStatisticsBySenderIdWithHttpMessagesAsync(p), _requestContext.ClientId, "Reflink statistics requested");
+            var result = await ExecuteRefLinksMethod(p => _referralLinksService.GetReferralLinksStatisticsBySenderIdWithHttpMessagesAsync(p), _requestContext.ClientId, "Reflink statistics requested");
+            return result;
+        }
+
+        /// <summary>
+        /// Get all gift coin links per sender.
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("giftCoins/sender/{senderId}")]
+        [SwaggerOperation("GetGiftCoinReferralLinkBySenderId")]
+        [ProducesResponseType(typeof(ErrorResponseModel), (int)HttpStatusCode.NotFound)]
+        [ProducesResponseType(typeof(GetReferralLinkResponse), (int)HttpStatusCode.OK)]
+        public async Task<IActionResult> GetGiftCoinReferralLinkBySenderId(string senderId)
+        {
+            var result = await ExecuteRefLinksMethod(p => _referralLinksService.GetGroupReferralLinkBySenderIdWithHttpMessagesAsync(p), senderId, "Reflink statistics requested");
             return result;
         }
 
@@ -128,7 +140,26 @@ namespace Lykke.blue.Api.Controllers
             var serviceRequest = request.ConvertToServiceModel();
             serviceRequest.SenderClientId = _requestContext.ClientId;
 
-            var result = await ExecuteRefLinksMethod((p) => _referralLinksService.RequestGiftCoinsReferralLinkWithHttpMessagesAsync(p), serviceRequest, request.LogMessage);
+            var result = await ExecuteRefLinksMethod(p => _referralLinksService.RequestGiftCoinsReferralLinkWithHttpMessagesAsync(p), serviceRequest, request.LogMessage);
+            return result;
+        }
+
+        /// <summary>
+        /// Mass Generate Gift Coin referral links
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        [HttpPost("giftCoins/group")]
+        [SwaggerOperation("GroupGenerateGiftCoinLinks")]
+        [ProducesResponseType(typeof(ErrorResponseModel), (int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType(typeof(ErrorResponseModel), (int)HttpStatusCode.InternalServerError)]
+        [ProducesResponseType(typeof(RequestRefLinkResponse), (int)HttpStatusCode.Created)]
+        public async Task<IActionResult> GroupGenerateGiftCoinLinks([FromBody] GiftCoinRequestGroupModel request)
+        {
+            var serviceRequest = request.ConvertToServiceModel();
+            serviceRequest.SenderClientId = _requestContext.ClientId;
+
+            var result = await ExecuteRefLinksMethod(p => _referralLinksService.GroupGenerateGiftCoinLinksWithHttpMessagesAsync(p), serviceRequest, request.LogMessage);
             return result;
         }
 
@@ -148,96 +179,8 @@ namespace Lykke.blue.Api.Controllers
             var serviceRequest = request.ConvertToServiceModel();
             serviceRequest.RecipientClientId = _requestContext.ClientId;
 
-            var result = await ExecuteRefLinksMethod((p) => _referralLinksService.ClaimGiftCoinsWithHttpMessagesAsync(refLinkId, serviceRequest), serviceRequest, request.LogMessage);
+            var result = await ExecuteRefLinksMethod(p => _referralLinksService.ClaimGiftCoinsWithHttpMessagesAsync(refLinkId, serviceRequest), serviceRequest, request.LogMessage);
             return result;
-        }
-
-        /// <summary>
-        /// Get offchain ChannelKey for transfer.  
-        /// </summary>
-        /// <returns></returns>
-        [HttpGet("channel/key/{asset}")]
-        [SwaggerOperation("GetChannelKey")]
-        [ProducesResponseType(typeof(string), (int)HttpStatusCode.OK)]
-        public async Task<IActionResult> GetChannelKey(string asset)
-        {
-            var res = await _referralLinksService.GetChannelKeyAsync(asset, _requestContext.ClientId);
-            return Ok(res.Key);
-        }
-
-        /// <summary>
-        /// Create offchain transfer to Lykke wallet
-        /// </summary>
-        /// <returns></returns>
-        [HttpPost("transfer/hotWallet")]
-        [SwaggerOperation("TransferToLykkeHotWallet")]
-        [ProducesResponseType(typeof(RefLinksTransferOffchainResponse), (int)HttpStatusCode.OK)]
-        [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
-        [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
-        public async Task<IActionResult> TransferToLykkeWallet([FromBody] TransferToLykkeWalletModel request)
-        {
-            var serviceRequest = request.ConvertToServiceModel();
-            serviceRequest.ClientId = _requestContext.ClientId;
-
-            var response = await _referralLinksService.TransferToLykkeHotWalletWithHttpMessagesAsync(serviceRequest);
-            return await ProcessAndReturnOffchainResult(response, request);
-        }
-
-        /// <summary>
-        /// Process offchain channel
-        /// </summary>
-        /// <returns></returns>
-        [HttpPost("channel/process")]
-        [SwaggerOperation("ProcessChannel")]
-        [ProducesResponseType(typeof(RefLinksTransferOffchainResponse), (int)HttpStatusCode.OK)]
-        [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
-        [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
-        public async Task<IActionResult> ProcessChannel([FromBody] ProcessChannelModel request)
-        {
-            var serviceRequest = request.ConvertToServiceModel();
-            serviceRequest.ClientId = _requestContext.ClientId;
-
-            var response = await _referralLinksService.ProcessChannelWithHttpMessagesAsync(serviceRequest);
-            return await ProcessAndReturnOffchainResult(response, request);
-        }
-
-        /// <summary>
-        /// Process offchain channel
-        /// </summary>
-        /// <returns></returns>
-        [HttpPost("transfer/finalize")]
-        [SwaggerOperation("FinalizeRefLinkTransfer")]
-        [ProducesResponseType(typeof(RefLinksTransferOffchainResponse), (int)HttpStatusCode.OK)]
-        [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
-        [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
-        public async Task<IActionResult> Finalize([FromBody] FinalizeTransferModel request)
-        {
-            var serviceRequest = request.ConvertToServiceModel();
-            serviceRequest.ClientId = _requestContext.ClientId;
-
-            var response = await _referralLinksService.FinalizeRefLinkTransferWithHttpMessagesAsync(serviceRequest);
-            return await ProcessAndReturnOffchainResult(response, request);
-        }
-
-        private async Task<IActionResult> ProcessAndReturnOffchainResult<T, TU>(HttpOperationResponse<T> offchainResult, TU request)
-        {
-
-            var error = await offchainResult.CheckClientResponseForErrors();
-            if (error != null)
-            {
-                return error;
-            }
-
-            var result = offchainResult.Body as OffchainTradeRespModel;
-
-            if (result!=null)
-            {
-                return Ok(Mapper.Map<OffchainTradeRespModel>(result));
-            }
-
-            await LogError(request, ControllerContext, $"Unexpected response type from service client: {offchainResult.Body.GetType()}. Client response: {offchainResult.ToJson()} ");
-            return StatusCode((int)HttpStatusCode.InternalServerError);
-
         }
 
         private async Task<IActionResult> ExecuteRefLinksMethod<TU, T>(Func<TU, Task<HttpOperationResponse<T>>> method, TU request, string logMessage)
