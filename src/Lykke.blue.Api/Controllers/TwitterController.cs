@@ -2,6 +2,7 @@
 using Lykke.blue.Api.Models.TwitterModels;
 using Lykke.blue.Api.Strings;
 using Lykke.blue.Service.InspireStream.Client;
+using Lykke.blue.Service.InspireStream.Client.AutorestClient.Models;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
 using Swashbuckle.SwaggerGen.Annotations;
@@ -40,9 +41,10 @@ namespace Lykke.blue.Api.Controllers
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
         public async Task<IActionResult> GetTweetsJson([FromBody]TweetsRequestModel model)
         {
-            var result = (await _inspireStreamClient.GetAsync(model.CreateReques(model)))?.ToList();
+            var resEnum = await _inspireStreamClient.GetAsync(model.CreateReques(model));
+            var result = resEnum as TweetsResponseModel[] ?? resEnum?.ToArray();
 
-            if (result == null || result.Count() < 0)
+            if (result == null || !result.Any())
                 return NotFound(Phrases.TweetsNotFound);
 
             return Ok(result.Select(t => JObject.Parse(t.TweetJSON)));
