@@ -12,7 +12,7 @@ using Lykke.blue.Api.Infrastructure;
 using Lykke.blue.Api.Services;
 using Lykke.blue.Api.Services.Identity;
 using Lykke.blue.Service.InspireStream.Client;
-using Lykke.blue.Service.ReferralLinks.Client.AutorestClient;
+using Lykke.blue.Service.ReferralLinks.Client;
 using Lykke.Service.ClientAccount.Client;
 using Lykke.Service.ClientAccount.Client.AutorestClient;
 using Lykke.Service.Pledges.Client;
@@ -104,10 +104,10 @@ namespace Lykke.blue.Api.Modules
 
             builder.RegisterLykkeServiceClient(_settings.CurrentValue.Services.ClientAccountServiceUrl);
 
-
-            builder.RegisterType<LykkeBlueServiceReferralLinks>()
-                .As<ILykkeBlueServiceReferralLinks>()
-                .WithParameter("baseUri", new Uri(_settings.CurrentValue.Services.RefLinksServiceUrl))
+            builder.RegisterType<ReferralLinksClient>()
+                .As<IReferralLinksClient>()
+                .WithParameter("serviceUrl", _settings.CurrentValue.Services.RefLinksServiceUrl)
+                .WithParameter("log", _log)
                 .SingleInstance();
 
             builder.RegisterLykkeServiceClient(_settings.CurrentValue.Services.ClientAccountServiceUrl);

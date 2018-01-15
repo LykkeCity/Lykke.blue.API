@@ -1,16 +1,14 @@
-﻿using Common;
-using Common.Log;
+﻿using Common.Log;
 using Lykke.blue.Api.Core.Filters;
 using Lykke.blue.Api.Infrastructure;
-using Lykke.blue.Api.Infrastructure.Extensions;
 using Lykke.blue.Api.Models.RefLinksModels;
-using Lykke.blue.Service.ReferralLinks.Client.AutorestClient;
+using Lykke.blue.Service.ReferralLinks.Client;
 using Lykke.blue.Service.ReferralLinks.Client.AutorestClient.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Rest;
 using Swashbuckle.SwaggerGen.Annotations;
 using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
 
@@ -21,11 +19,11 @@ namespace Lykke.blue.Api.Controllers
     [ServiceFilter(typeof(DisableOnMaintenanceFilter))]
     public class ReferralLinksController : BluApiBaseController
     {
-        private readonly ILykkeBlueServiceReferralLinks _referralLinksService;
+        private readonly IReferralLinksClient _referralLinksService;
         private readonly IRequestContext _requestContext;
 
-        public ReferralLinksController(ILog log, 
-            ILykkeBlueServiceReferralLinks refSrv,
+        public ReferralLinksController(ILog log,
+            IReferralLinksClient refSrv,
             IRequestContext requestContext) : base (log)
         {
             _referralLinksService = refSrv;
@@ -40,12 +38,22 @@ namespace Lykke.blue.Api.Controllers
         [HttpGet("{id}")]
         [AllowAnonymous]
         [SwaggerOperation("GetReferralLinkById")]
-        [ProducesResponseType(typeof(string), (int)HttpStatusCode.NotFound)]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
         [ProducesResponseType(typeof(string), (int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.InternalServerError)]
         public async Task<IActionResult> GetReferralLinkById(string id)
         {
-            var result = await ExecuteRefLinksMethod(p => _referralLinksService.GetReferralLinkByIdWithHttpMessagesAsync(p), id, "Get Referral Link By Id");
-            return result;
+            try
+            {
+                var refLink = await _referralLinksService.GetReferralLinkAsync(id);
+                if (refLink == null) return NotFound();
+                return Ok(refLink);
+            }
+            catch (Exception e)
+            {
+                await LogError(id, ControllerContext, e.Message);
+                return StatusCode((int)HttpStatusCode.InternalServerError);
+            }
         }
 
         /// <summary>
@@ -56,14 +64,24 @@ namespace Lykke.blue.Api.Controllers
         [HttpGet("url/{url}")]
         [AllowAnonymous]
         [SwaggerOperation("GetReferralLinkByUrl")]
-        [ProducesResponseType(typeof(ErrorResponseModel), (int)HttpStatusCode.NotFound)]
-        [ProducesResponseType(typeof(GetReferralLinkResponse), (int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
+        [ProducesResponseType(typeof(string), (int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.InternalServerError)]
         public async Task<IActionResult> GetReferralLinkByUrl(string url)
         {
-            var decoded = WebUtility.UrlDecode(url);
+            try
+            {
+                var decoded = WebUtility.UrlDecode(url);
 
-            var result = await ExecuteRefLinksMethod(p => _referralLinksService.GetReferralLinkByUrlWithHttpMessagesAsync(p), decoded, "Get Referral Link By Url");
-            return result;
+                var refLink = await _referralLinksService.GetReferralLinkByUrlAsync(decoded);
+                if (refLink == null) return NotFound();
+                return Ok(refLink);
+            }
+            catch (Exception e)
+            {
+                await LogError(url, ControllerContext, e.Message);
+                return StatusCode((int)HttpStatusCode.InternalServerError);
+            }
         }
 
         /// <summary>
@@ -74,25 +92,41 @@ namespace Lykke.blue.Api.Controllers
         [SwaggerOperation("RequestInvitationReferralLink")]
         [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
         [ProducesResponseType(typeof(string), (int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.InternalServerError)]
         public async Task<IActionResult> RequestInvitationReferralLink()
         {
-            var result = await ExecuteRefLinksMethod(p => _referralLinksService.RequestInvitationReferralLinkWithHttpMessagesAsync(p), new InvitationReferralLinkRequest { SenderClientId = _requestContext.ClientId }, "Invitation Link requested");
-            return result;
+            try
+            {
+                var refLink = await _referralLinksService.RequestInvitationReferralLinkAsync(new InvitationReferralLinkRequest { SenderClientId = _requestContext.ClientId });
+                return refLink;
+            }
+            catch (Exception e)
+            {
+                await LogError(_requestContext.ClientId, ControllerContext, e.Message);
+                return StatusCode((int)HttpStatusCode.InternalServerError);
+            }
         }
 
         [HttpPut("invitation/{refLinkId}/claim")]
         [SwaggerOperation("ClaimInvitationLink")]
         [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
-        [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
+        [ProducesResponseType((int)HttpStatusCode.InternalServerError)]
         [ProducesResponseType(typeof(string), (int)HttpStatusCode.OK)]
-        [ProducesResponseType(typeof(string), (int)HttpStatusCode.NoContent)]
         public async Task<IActionResult> ClaimInvitationLink(string refLinkId, [FromBody] ClaimRefLinkModel request)
         {
-            var serviceRequest = request.ConvertToServiceModel();
-            serviceRequest.RecipientClientId = _requestContext.ClientId;
+            try
+            {
+                var serviceRequest = request.ConvertToServiceModel();
+                serviceRequest.RecipientClientId = _requestContext.ClientId;
 
-            var result = await ExecuteRefLinksMethod(p => _referralLinksService.ClaimInvitationLinkWithHttpMessagesAsync(refLinkId, serviceRequest), serviceRequest, request.LogMessage);
-            return result;
+                var refLink = await _referralLinksService.ClaimInvitationLinkAsync(refLinkId, serviceRequest);
+                return refLink;
+            }
+            catch (Exception e)
+            {
+                await LogError(_requestContext.ClientId, ControllerContext, e.Message);
+                return StatusCode((int)HttpStatusCode.InternalServerError);
+            }
         }
 
         /// <summary>
@@ -101,13 +135,23 @@ namespace Lykke.blue.Api.Controllers
         /// <returns></returns>
         [HttpGet("statistics")]
         [SwaggerOperation("GetReferralLinksStatisticsBySenderId")]
-        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
-        [ProducesResponseType(typeof(GetReferralLinksStatisticsBySenderIdResponse), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(string), (int)HttpStatusCode.OK)] 
         public async Task<IActionResult> GetReferralLinksStatisticsBySenderId()
         {
-            var result = await ExecuteRefLinksMethod(p => _referralLinksService.GetReferralLinksStatisticsBySenderIdWithHttpMessagesAsync(p), _requestContext.ClientId, "Reflink statistics requested");
-            return result;
+            try
+            {
+                var statistics = await _referralLinksService.GetReferralLinksStatisticsBySenderIdAsync(_requestContext.ClientId);
+                if (statistics == null) return NotFound();
+                return Ok(statistics); 
+
+            }
+            catch (Exception e)
+            {
+                await LogError(_requestContext.ClientId, ControllerContext, e.Message);
+                return StatusCode((int)HttpStatusCode.InternalServerError);
+            }
         }
+
 
         /// <summary>
         /// Get all gift coin links per sender.
@@ -115,12 +159,21 @@ namespace Lykke.blue.Api.Controllers
         /// <returns></returns>
         [HttpGet("giftCoins/sender/{senderId}")]
         [SwaggerOperation("GetGiftCoinReferralLinkBySenderId")]
-        [ProducesResponseType(typeof(ErrorResponseModel), (int)HttpStatusCode.NotFound)]
-        [ProducesResponseType(typeof(GetReferralLinkResponse), (int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
+        [ProducesResponseType(typeof(IEnumerable<string>), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> GetGiftCoinReferralLinkBySenderId(string senderId)
         {
-            var result = await ExecuteRefLinksMethod(p => _referralLinksService.GetGroupReferralLinkBySenderIdWithHttpMessagesAsync(p), senderId, "Reflink statistics requested");
-            return result;
+            try
+            {
+                var refLinks = await _referralLinksService.GetGiftCoinReferralLinksAsync(senderId);
+                if (refLinks == null) return NotFound();
+                return Ok(refLinks);
+            }
+            catch (Exception e)
+            {
+                await LogError(senderId, ControllerContext, e.Message);
+                return StatusCode((int)HttpStatusCode.InternalServerError);
+            }
         }
 
 
@@ -132,16 +185,23 @@ namespace Lykke.blue.Api.Controllers
         [HttpPost("giftCoins")]
         [SwaggerOperation("RequestGiftCoinsReferralLink")]
         [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
-        [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
+        [ProducesResponseType((int)HttpStatusCode.InternalServerError)]
         [ProducesResponseType(typeof(string), (int)HttpStatusCode.Created)]
-        [ProducesResponseType(typeof(string), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> RequestGiftCoinsReferralLink([FromBody] RequestGiftCoinsLinkModel request)
         {
-            var serviceRequest = request.ConvertToServiceModel();
-            serviceRequest.SenderClientId = _requestContext.ClientId;
+            try
+            {
+                var serviceRequest = request.ConvertToServiceModel();
+                serviceRequest.SenderClientId = _requestContext.ClientId;
 
-            var result = await ExecuteRefLinksMethod(p => _referralLinksService.RequestGiftCoinsReferralLinkWithHttpMessagesAsync(p), serviceRequest, request.LogMessage);
-            return result;
+                var refLink = await _referralLinksService.RequestGiftCoinsReferralLinkAsync(serviceRequest);
+                return refLink;
+            }
+            catch (Exception e)
+            {
+                await LogError(request, ControllerContext, e.Message);
+                return StatusCode((int)HttpStatusCode.InternalServerError);
+            }
         }
 
         /// <summary>
@@ -151,16 +211,24 @@ namespace Lykke.blue.Api.Controllers
         /// <returns></returns>
         [HttpPost("giftCoins/group")]
         [SwaggerOperation("GroupGenerateGiftCoinLinks")]
-        [ProducesResponseType(typeof(ErrorResponseModel), (int)HttpStatusCode.BadRequest)]
-        [ProducesResponseType(typeof(ErrorResponseModel), (int)HttpStatusCode.InternalServerError)]
-        [ProducesResponseType(typeof(RequestRefLinkResponse), (int)HttpStatusCode.Created)]
+        [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType((int)HttpStatusCode.InternalServerError)]
+        [ProducesResponseType(typeof(string), (int)HttpStatusCode.Created)]
         public async Task<IActionResult> GroupGenerateGiftCoinLinks([FromBody] GiftCoinRequestGroupModel request)
         {
-            var serviceRequest = request.ConvertToServiceModel();
-            serviceRequest.SenderClientId = _requestContext.ClientId;
+            try
+            {
+                var serviceRequest = request.ConvertToServiceModel();
+                serviceRequest.SenderClientId = _requestContext.ClientId;
 
-            var result = await ExecuteRefLinksMethod(p => _referralLinksService.GroupGenerateGiftCoinLinksWithHttpMessagesAsync(p), serviceRequest, request.LogMessage);
-            return result;
+                var refLinks = await _referralLinksService.GroupGenerateGiftCoinLinksAsync(serviceRequest);
+                return refLinks;
+            }
+            catch (Exception e)
+            {
+                await LogError(request, ControllerContext, e.Message);
+                return StatusCode((int)HttpStatusCode.InternalServerError);
+            }
         }
 
         /// <summary>
@@ -172,32 +240,23 @@ namespace Lykke.blue.Api.Controllers
         [HttpPut("giftCoins/{refLinkId}/claim")]
         [SwaggerOperation("ClaimGiftCoins")]
         [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
-        [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
+        [ProducesResponseType((int)HttpStatusCode.InternalServerError)]
         [ProducesResponseType(typeof(string), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> ClaimGiftCoins(string refLinkId, [FromBody] ClaimRefLinkModel request)
         {
-            var serviceRequest = request.ConvertToServiceModel();
-            serviceRequest.RecipientClientId = _requestContext.ClientId;
-
-            var result = await ExecuteRefLinksMethod(p => _referralLinksService.ClaimGiftCoinsWithHttpMessagesAsync(refLinkId, serviceRequest), serviceRequest, request.LogMessage);
-            return result;
-        }
-
-        private async Task<IActionResult> ExecuteRefLinksMethod<TU, T>(Func<TU, Task<HttpOperationResponse<T>>> method, TU request, string logMessage)
-        {
-            var response = await method(request);
-
-            var error = await response.CheckClientResponseForErrors();
-            if (error != null)
+            try
             {
-                return error;
+                var serviceRequest = request.ConvertToServiceModel();
+                serviceRequest.RecipientClientId = _requestContext.ClientId;
+
+                var result = await _referralLinksService.ClaimGiftCoinsAsync(refLinkId, serviceRequest);
+                return result;
             }
-
-            var result = response.Body;
-
-            await LogInfo(request, ControllerContext, $"{logMessage}: {new { response.Response.StatusCode, result }.ToJson()}");
-
-            return StatusCode((int)response.Response.StatusCode, result);
+            catch (Exception e)
+            {
+                await LogError(request, ControllerContext, e.Message);
+                return StatusCode((int)HttpStatusCode.InternalServerError);
+            }
         }
     }
 }
