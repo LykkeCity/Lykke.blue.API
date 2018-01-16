@@ -32,7 +32,7 @@ namespace Lykke.blue.Api.Controllers
         /// </summary>
         /// <param name="model">Tweets request model by which we search for tweets</param>
         /// <returns>
-        /// Return tweets json format according twitter api
+        /// Return tweets json format according  twitter api
         /// </returns>
         [HttpPost("getTweetsJSON")]
         [SwaggerOperation("GetTweetsJSON")]
