@@ -7,14 +7,11 @@ using Lykke.blue.Api.Requests;
 using Lykke.blue.Api.Responses;
 using Lykke.blue.Api.Strings;
 using Lykke.Service.ClientAccount.Client;
-using Lykke.Service.ClientAccount.Client.Models;
 using Lykke.Service.Registration;
 using Lykke.Service.Registration.Models;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.SwaggerGen.Annotations;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 
@@ -92,7 +89,7 @@ namespace Lykke.blue.Api.Controllers
             catch (Exception ex)
             {
                 //fake community count
-                await _log.WriteInfoAsync(nameof(ClientController), nameof(GetRegisteredUsersCount), partnerId , ex.ToString(), DateTime.Now);
+                await _log.WriteInfoAsync(nameof(ClientController), nameof(GetRegisteredUsersCount), partnerId , ex.ToString());
                 return Ok(UsersCountResponseModel.Create(135));
             }
         }

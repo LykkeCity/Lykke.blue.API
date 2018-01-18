@@ -7,6 +7,5 @@ namespace Lykke.blue.Api.Core.Identity
     {
         Task<ClaimsPrincipal> GetCurrent();
         string GetToken();
-        void InvalidateCache(string token);
     }
 }
